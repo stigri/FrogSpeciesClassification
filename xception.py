@@ -41,7 +41,7 @@ else:
 
 
 ## for tests use data_{}_{}.test.npz
-filename = 'data_{}_{}.npz'.format(mode, resize)
+filename = 'npz/data_{}_{}.npz'.format(mode, resize)
 X, y, labeltonumber = load_data(filename)
 
 ## Olafenwa and Olafenva - 2018 #######################
