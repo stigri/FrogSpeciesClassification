@@ -23,6 +23,7 @@ echo "stine ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 ## ssh
 mkdir -p /home/stine/.ssh
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvHdZH+pPrDR7tTNVtQPO0GZHsEt43RFWRzvEqkQsub7/s2n9ASwDAkUm+gyvEEH1gGvCVhUkplqkLhw9dZexYDQPSSzeJ7UAGT4zUdJdESeuZdG2+PGO/qY51q6GhO902a+uEN/Ea+IHGQvPW+U9np7joU/jC2OeL53/mO0tWEgeo6fefFhayMKAvuYHj5wDwMjb9Zrlw+7Vdx/n4A9emgPeB57Yg/DDPNjEvoKm+bZdhnrFIKEzNOMEe/Z8nfz9VnE9LpZ0zkBp69zVwsSJEgdHGg7EAiw61djDVGTvlifV9KRDSkXa28RTWYJCAPUCJjGu4zcSV+P+EKlb/D+9Aw== msc-bioinf2019@griep.at" > /home/stine/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaFesWicuMjw2s9+4rl36IP781nZ07Vasir5nybvVmmN2wDV1sTcv0iS8VgH54qxmCtV2zQiub0gMq4kHnnTVMKdlMGOyhbvC4X3UVmhJFrD+8UG5bmsbEVXjmgh7Y1oEoldrIf4DlnnHcetdSwuMvV5xqI3iZ+8xg0j9pnN8a9xWj5dUv/rkq2Z5So7AYd+aVCU6uETh8N9fsMZSo/Eu9A+vYvwWhsysY0S8m7wr9zkd71fjc1mTPlAsZGtzACRswrk3S2NLdCd7NNOU1jT5QVffc7poTeCngMFrXjmtUPZZQxOfA6oDq0rSCep+TgjVa2KQAypMDQTjKfkwjaklL markus@kuppe.org" >> /home/stine/.ssh/authorized_keys
 
 ## Fix permission because steps are executed by root
 chown -R stine:stine /home/stine/
