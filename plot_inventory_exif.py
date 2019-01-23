@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid.parasite_axes import SubplotHost
 import pickle
 
+## needs dictinventory.pkl created by inventory_exif.py
 ## two plots with the same x-axis next to each other (four plots in total)
 ## list: genus (y-axis)
 ## list: species (y-axis)
@@ -66,7 +67,7 @@ for genus in dictgenusspecies:
         ## undifined species (genus sp.) are labeled as genus genus
         ## remove all undefined species
         if species not in dictgenusspecies.keys():
-            ## remove all species with less then 3 indiviuals
+            ## remove all species with less then 3 individuals
             if nrindividualspec > 3:
                 included = 1
                 nrimagesspec = 0
@@ -144,6 +145,7 @@ for genus in ygenus:
 ## plot horizontal barplot for given genera with given color and label (second plot without label on y-axis)
 ax1.barh(ygenus, xnrindividualgen, color=colors, tick_label=ygenus)
 ax2.barh(ygenus, xnrimagesgen, color=colors, tick_label='')
+
 
 ## calculate mean number of images and individuals and plot vertical line in genera barplots
 minnrindividualgen = min(xnrindividualgen)

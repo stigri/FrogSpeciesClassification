@@ -7,6 +7,7 @@ from collections import defaultdict
 import pickle
 
 ## Script to get inventory of what images showing which genus and species there are
+## generates dictinventory.pkl which is used in plot_inventory_exif.py
 ## TODO: Use as guideline to write dictspnrsvl, dictspnrweight, dictspnrgps, etc.
 ## TODO: (Do not read metadata from exif then but from xmp data)
 
