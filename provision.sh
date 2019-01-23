@@ -89,7 +89,7 @@ mkdir /tmp/data-file-init-pip-python/
 cd /home/stine/
 sudo -u stine git config --global user.email "msc-bioinf2019@griep.at"
 sudo -u stine git config --global user.name "Stine Griep"
-sudo -u stine git clone https://bitbucket.org/stigri/msccode.git
+sudo -u stine git clone https://git.informatik.uni-hamburg.de/3griep/msccode.git
 cd /home/stine/msccode
 sudo -u stine git lfs install
 sudo -u stine git lfs pull
