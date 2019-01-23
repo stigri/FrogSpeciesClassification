@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+## lists are yspecies and ygenus from plot_inventory_exif.py
 genera = ['Leptophryne', 'Microhyla', 'Fejervarya', 'Polypedates', 'Limnonectes', 'Chalcorana', 'Rhacophorus',
           'Nyctixalus', 'Amnirana', 'Phrynoidis', 'Odorrana', 'Ingerophrynus', 'Sumaterana', 'Pelophryne', 'Pulchrana',
           'Occidozyga', 'Hylarana', 'Leptobrachium', 'Megophrys', 'Huia', 'Philautus', 'Ansonia']
