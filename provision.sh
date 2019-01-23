@@ -5,7 +5,7 @@
 ## go get -u github.com/ebsarr/packet # as user installs to ~/go/bin
 ##
 ## packet.net admin add-profile
-## packet.net baremetal create-device --spot-instance --spot-price-max 0.25 --hostname tf.griep.at --os-type ubuntu_18_04 --facility dfw2 --project-id d673cafc-0f2e-4669-b5b4-7d6627f653fe --plan 18810cec-1711-4f30-b323-a1001804b10fq --userfile provision.sh
+## packet.net baremetal create-device --spot-instance --spot-price-max 0.25 --hostname tf.griep.at --os-type ubuntu_18_04 --facility dfw2 --project-id d673cafc-0f2e-4669-b5b4-7d6627f653fe --plan 18810cec-1711-4f30-b323-a1001804b10f --userfile provision.sh
 ##
 ###############################
 ###############################
