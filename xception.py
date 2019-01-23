@@ -41,7 +41,7 @@ else:
 
 
 ## for tests use data_{}_{}.test.npz
-filename = 'npz/data_{}_{}.npz'.format(mode, resize)
+filename = 'data_{}_{}.npz'.format(mode, resize)
 X, y, labeltonumber = load_data(filename)
 
 ## Olafenwa and Olafenva - 2018 #######################
@@ -128,7 +128,7 @@ save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs')
 
 ## name of model files
 model_name = 'Xception.{epoch:03d}.{val_acc:.3f}.hdf5'
-csv_name = 'Xception_{}_{}.test.csv'.format(mode, resize)
+csv_name = 'Xception_{}_{}.csv'.format(mode, resize)
 
 ## create directory to save models if it does not exist
 if not os.path.isdir(save_modeldirectory):
@@ -160,10 +160,15 @@ elif worker == 'gpu':
 ## check the min number of pictures per label and divide by 3 and set result as k to make sure to have at least
 ## 3 pictures per label in each k-fold
 count = Counter(y_train)
-# print(count)
+print(count)
 minlabel = min(count.keys(), key=(lambda k: count[k]))
 ## calculate k to make shure that each class consists of at least 3 different pictures
-k = int(count[minlabel] / 1)
+labelmin = count[minlabel]
+print('minlabel: {}'.format(labelmin))
+if labelmin < 9:
+    k = 2
+else:
+    k = int(count[minlabel] / 3)
 print('k : {}'.format(k))
 ## use stratified k-fold to generate folds
 ## skf is a generator, which does not compute the train-test split until it is needed
