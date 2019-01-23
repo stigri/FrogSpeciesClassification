@@ -7,6 +7,15 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+genera = ['Leptophryne', 'Microhyla', 'Fejervarya', 'Polypedates', 'Limnonectes', 'Chalcorana', 'Rhacophorus',
+          'Nyctixalus', 'Amnirana', 'Phrynoidis', 'Odorrana', 'Ingerophrynus', 'Sumaterana', 'Pelophryne', 'Pulchrana',
+          'Occidozyga', 'Hylarana', 'Leptobrachium', 'Megophrys', 'Huia', 'Philautus', 'Ansonia']
+species = ['borbonica', 'heymonsi', 'achatina', 'limnocharis', 'leucomystax', 'otilophus', 'macrotis', 'paramacrodon',
+           'sisikdagu', 'blythii', 'hikidai', 'kuhlii', 'macrodon', 'chalconota', 'rufipes', 'prominanus',
+           'cyanopunctatus', 'catamitus', 'margaritifer', 'poecilonotus', 'pictum', 'nicobariensis', 'asper',
+           'juxtasper', 'hosii', 'parvus', 'dabulescens', 'crassiovis', 'montana', 'signata', 'debussyi', 'rawa',
+           'glandulosa', 'picturata', 'sumatrana', 'erythraea', 'hasseltii', 'nasuta', 'masonii']
+
 ## Function to rescale the images from rectangular to squared images with given edge lenght.
 ## Longer edge of original edge is resized to given edge length without distortion.
 ## Black borders are added to shorter edge to get squared format
@@ -85,16 +94,19 @@ def prepare_images(directory, resize, length, mode):
                     ## if given mode is genus create dictionary with all genera as keys and numbers 1-n as value
                     if mode == 'genus':
                         label = genus
-                        if label not in labeltonumber:
-                            labeltonumber.append(label)
-                        X, y = rescale(X, y, labeltonumber, absolutimpath, label)
+                        if label not in genera:
+                            pass
+                        else:
+                            if label not in labeltonumber:
+                                labeltonumber.append(label)
+                            X, y = rescale(X, y, labeltonumber, absolutimpath, label)
 
                         ## make sure genus sp. are not included in species dict
                     ## if given mode is species create dictionary with all species as keys and numbers 1-n as value
                     elif mode == 'species':
                         label = genus_species
                         ## do not use images were species is unknown
-                        if match.group(2) != 'sp':
+                        if match.group(2) in species:
                             if label not in labeltonumber:
                                 labeltonumber.append(label)
                             X, y = rescale(X, y, labeltonumber, absolutimpath, label)
