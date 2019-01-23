@@ -5,7 +5,7 @@
 ## go get -u github.com/ebsarr/packet # as user installs to ~/go/bin
 ##
 ## packet.net admin add-profile
-## packet.net baremetal create-device --spot-instance --spot-price-max 0.25 --hostname tf.griep.at --os-type ubuntu_18_04 --facility dfw1 --project-id XXX --plan 18810cec-1711-4f30-b323-a1001804b10fq --userfile provision.sh
+## packet.net baremetal create-device --spot-instance --spot-price-max 0.25 --hostname tf.griep.at --os-type ubuntu_18_04 --facility dfw2 --project-id d673cafc-0f2e-4669-b5b4-7d6627f653fe --plan 18810cec-1711-4f30-b323-a1001804b10fq --userfile provision.sh
 ##
 ###############################
 ###############################
@@ -53,9 +53,7 @@ mkdir /tmp/data-file-init-cuda/
 
 #####################################
 
-apt-get install --no-install-recommends mate-desktop-environment-extras x2gomatebindings x2goserver x2goserver-xsession x2goserver-extensions sshfs -y
-apt-get install --no-install-recommends mc zip unzip git git-lfs htop numactl screen -y
-apt-get install python3-opencv python3-matplotlib python3-dev python3-pip -y
+apt-get install --no-install-recommends mate-desktop-environment-extras x2gomatebindings x2goserver x2goserver-xsession x2goserver-extensions sshfs mc zip unzip git git-lfs htop numactl screen python3-opencv python3-matplotlib python3-dev python3-pip python3-setuptools -y
 
 mkdir /tmp/data-file-init-install/
 
@@ -68,8 +66,8 @@ mkdir /tmp/data-file-init-locale/
 #####################################
 
 ### https://www.tensorflow.org/install/pip
-pip3 install --upgrade pip
-pip3 install --upgrade numpy # Wanted by tf-nightly-gpu, Ubuntu's python3-numpy too old.
+#pip3 install --upgrade pip
+#pip3 install --upgrade numpy # Wanted by tf-nightly-gpu, Ubuntu's python3-numpy too old.
 pip3 install --upgrade tf-nightly-gpu # tensorflow-gpu (stable) does not work with cuda 10.
 
 python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))" > /tmp/verify-tf.txt
@@ -87,9 +85,13 @@ mkdir /tmp/data-file-init-pip-python/
 #####################################
 
 # Configure git and clone Stine's git repository
+cd /home/stine/
 sudo -u stine git config --global user.email "msc-bioinf2019@griep.at"
 sudo -u stine git config --global user.name "Stine Griep"
-sudo -u stine git lfs clone https://bitbucket.org/stigri/msccode.git
+sudo -u stine git clone https://bitbucket.org/stigri/msccode.git
+cd /home/stine/msccode
+sudo -u stine git lfs install
+sudo -u stine git lfs pull
 
 mkdir /tmp/data-file-init-git-clone/
 
