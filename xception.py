@@ -41,7 +41,7 @@ else:
 
 
 ## for tests use data_{}_{}.test.npz
-filename = 'npz/data_{}_{}.npz'.format(mode, resize)
+filename = 'npz/data_{}_{}.test.npz'.format(mode, resize)
 X, y, labeltonumber = load_data(filename)
 
 ## Olafenwa and Olafenva - 2018 #######################
@@ -53,16 +53,16 @@ X = X.astype('float32') / 255
 # plt.imshow(X[1])
 # plt.show()
 #
-# # ## Subtract the mean image
-# mean = X.mean(axis = 0)
+# ## Subtract the mean image
+mean = X.mean(axis = 0)
 # print('mean: {}'.format(mean))
-# X = X - mean
+X = X - mean
 # plt.imshow(X[1])
 # plt.show()
 # print(np.mean(X))
-#
-# # ## Divide by the standard deviation
-# # # X = X / X.std(axis = 0)
+
+# ## Divide by the standard deviation
+# X = X / X.std(axis = 0)
 # std = X.std(axis = 0)
 # print('std: {}'.format(std))
 # X = X / std
@@ -76,6 +76,7 @@ X = X.astype('float32') / 255
 ## use stratified sampling to devide training and test sets (training and test)
 ## sklearn.model_selection train_test_split (see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=42, stratify=y_train)
 # print(X_train)
 # print(y_train)
 # print(X_test)
@@ -157,59 +158,86 @@ elif worker == 'gpu':
     parallel_model = multi_gpu_model(model, gpus = 2)
     parallel_model.compile(optimizer=Adam(lr_schedule(0)), loss='categorical_crossentropy', metrics=['accuracy'])
 
-## check the min number of pictures per label and divide by 3 and set result as k to make sure to have at least
-## 3 pictures per label in each k-fold
-count = Counter(y_train)
-print(count)
-minlabel = min(count.keys(), key=(lambda k: count[k]))
-## calculate k to make shure that each class consists of at least 3 different pictures
-labelmin = count[minlabel]
-print('minlabel: {}'.format(labelmin))
-if labelmin < 9:
-    k = 2
-else:
-    k = int(count[minlabel] / 3)
-print('k : {}'.format(k))
-## use stratified k-fold to generate folds
-## skf is a generator, which does not compute the train-test split until it is needed
-skf = StratifiedKFold(n_splits=k, random_state=42, shuffle=True)
+###################################### version 1.0 #####################################################################
+# ## check the min number of pictures per label and divide by 3 and set result as k to make sure to have at least
+# ## 3 pictures per label in each k-fold
+# count = Counter(y_train)
+# print(count)
+# minlabel = min(count.keys(), key=(lambda k: count[k]))
+# ## calculate k to make shure that each class consists of at least 3 different pictures
+# labelmin = count[minlabel]
+# print('minlabel: {}'.format(labelmin))
+# if labelmin < 9:
+#     k = 2
+# else:
+#     k = int(count[minlabel] / 3)
+# print('k : {}'.format(k))
+# ## use stratified k-fold to generate folds
+# ## skf is a generator, which does not compute the train-test split until it is needed
+# skf = StratifiedKFold(n_splits=k, random_state=42, shuffle=True)
+#
+# for k_train_idx, k_test_idx in skf.split(X_train, y_train):
+#     # print('train: %s, test: %s' % (k_train_idx, k_test_idx))
+#
+#     ## in each iteration balance the training set not the validation fold
+#     ## function random minority oversampling: copy minority images to balance the data and return balanced dataset
+#     ros = RandomOverSampler(random_state=43)
+#     ## RandomOverSampler randomly copies indices of images instead of copying the images and returns list of list of indices
+#     X_train_res_idx, y_train_res = ros.fit_resample(k_train_idx.reshape(-1, 1), y_train[k_train_idx])
+#     X_test_res_idx, y_test_res = ros.fit_resample(k_test_idx.reshape(-1, 1), y_train[k_test_idx])
+#     ## function converts list of list of indices in list of indices
+#     X_train_res_idx = [item for sublist in X_train_res_idx for item in sublist]
+#     X_test_res_idx = [item for sublist in X_test_res_idx for item in sublist]
+#     # print('Resampled train dataset shape {}'.format(Counter(y_train_res)))
+#     # print('oversampled y_train: {}'.format(y_train_res))
+#     # print('Resampled test dataset shape {}'.format(Counter(y_test_res)))
+#     # print('oversampled y_test: {}'.format(y_test_res))
+#     # print('X_train_res_idx: {}'.format(X_train_res_idx))
+#     # print('X_test_res_idx: {}'.format(X_test_res_idx))
+#
+#     ## Converts a class vector (integers) to binary class matrix.
+#     y_train_matrix = to_categorical(y_train_res, len(labeltonumber))
+#     y_test_matrix = to_categorical(y_test_res, len(labeltonumber))
+#     ## in each iteration use data augmentation in the training set not the validation fold (keras)
+#     datagen = ImageDataGenerator(featurewise_center=True, featurewise_std_normalization=True, rotation_range=20,
+#                                  width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
+#     ## compute quantities required for featurewise normalization
+#     datagen.fit(X_train)
+#     print('[INFO] training network...')
+#     if worker == 'cpu':
+#     ## use validation fold for validation
+#         model.fit_generator(datagen.flow(X_train[X_train_res_idx], y_train_matrix, batch_size=BATCHSIZE),
+#                             validation_data=[X_train[X_test_res_idx], y_test_matrix], epochs=EPOCHS,
+#                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
+#     elif worker == 'gpu':
+#         parallel_model.fit_generator(datagen.flow(X_train[X_train_res_idx], y_train_matrix, batch_size=BATCHSIZE),
+#                             validation_data=[X_train[X_test_res_idx], y_test_matrix], epochs=EPOCHS,
+#                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
+#     accuracy = model.evaluate(x=X_train[X_test_res_idx], y=y_test_matrix, batch_size=BATCHSIZE)
+######################################## end version 1.0 ###############################################################
 
-for k_train_idx, k_test_idx in skf.split(X_train, y_train):
-    # print('train: %s, test: %s' % (k_train_idx, k_test_idx))
+######################################## version 1.1 ###################################################################
+datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
 
-    ## in each iteration balance the training set not the validation fold
-    ## function random minority oversampling: copy minority images to balance the data and return balanced dataset
-    ros = RandomOverSampler(random_state=43)
-    ## RandomOverSampler randomly copies indices of images instead of copying the images and returns list of list of indices
-    X_train_res_idx, y_train_res = ros.fit_resample(k_train_idx.reshape(-1, 1), y_train[k_train_idx])
-    X_test_res_idx, y_test_res = ros.fit_resample(k_test_idx.reshape(-1, 1), y_train[k_test_idx])
-    ## function converts list of list of indices in list of indices
-    X_train_res_idx = [item for sublist in X_train_res_idx for item in sublist]
-    X_test_res_idx = [item for sublist in X_test_res_idx for item in sublist]
-    # print('Resampled train dataset shape {}'.format(Counter(y_train_res)))
-    # print('oversampled y_train: {}'.format(y_train_res))
-    # print('Resampled test dataset shape {}'.format(Counter(y_test_res)))
-    # print('oversampled y_test: {}'.format(y_test_res))
-    # print('X_train_res_idx: {}'.format(X_train_res_idx))
-    # print('X_test_res_idx: {}'.format(X_test_res_idx))
+datagen.fit(X_train)
+y_train_matrix = to_categorical(y_train, len(labeltonumber))
+y_val_matrix = to_categorical(y_val, len(labeltonumber))
 
-    ## Converts a class vector (integers) to binary class matrix.
-    y_train_matrix = to_categorical(y_train_res, len(labeltonumber))
-    y_test_matrix = to_categorical(y_test_res, len(labeltonumber))
-    ## in each iteration use data augmentation in the training set not the validation fold (keras)
-    datagen = ImageDataGenerator(featurewise_center=True, featurewise_std_normalization=True, rotation_range=20,
-                                 width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
-    ## compute quantities required for featurewise normalization
-    datagen.fit(X_train)
-    print('[INFO] training network...')
-    if worker == 'cpu':
+if worker == 'cpu':
     ## use validation fold for validation
-        model.fit_generator(datagen.flow(X_train[X_train_res_idx], y_train_matrix, batch_size=BATCHSIZE),
-                            validation_data=[X_train[X_test_res_idx], y_test_matrix], epochs=EPOCHS,
+    model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
+                            validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
-    elif worker == 'gpu':
-        parallel_model.fit_generator(datagen.flow(X_train[X_train_res_idx], y_train_matrix, batch_size=BATCHSIZE),
-                            validation_data=[X_train[X_test_res_idx], y_test_matrix], epochs=EPOCHS,
+elif worker == 'gpu':
+    parallel_model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
+                            validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
-    accuracy = model.evaluate(x=X_train[X_test_res_idx], y=y_test_matrix, batch_size=BATCHSIZE)
+accuracy = model.evaluate(x=X_val, y=y_val_matrix, batch_size=BATCHSIZE)
+
+
+
+
+
+
+
     ## TODO: how to use test set for final validation
