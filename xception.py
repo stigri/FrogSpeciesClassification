@@ -41,6 +41,7 @@ else:
 
 
 ## for tests use data_{}_{}.test.npz
+## /home/stine/repositories
 filename = 'npz/data_{}_{}.test.npz'.format(mode, resize)
 X, y, labeltonumber = load_data(filename)
 
@@ -217,24 +218,31 @@ elif worker == 'gpu':
 ######################################## end version 1.0 ###############################################################
 
 ######################################## version 1.1 ###################################################################
-datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
-
-datagen.fit(X_train)
-y_train_matrix = to_categorical(y_train, len(labeltonumber))
+# datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
+#
+# datagen.fit(X_train)
+# y_train_matrix = to_categorical(y_train, len(labeltonumber))
 y_val_matrix = to_categorical(y_val, len(labeltonumber))
+#
+# if worker == 'cpu':
+#     ## use validation fold for validation
+#     model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
+#                             validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
+#                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
+# elif worker == 'gpu':
+#     parallel_model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
+#                             validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
+#                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
+# accuracy = model.evaluate(x=X_val, y=y_val_matrix, batch_size=BATCHSIZE)
 
-if worker == 'cpu':
-    ## use validation fold for validation
-    model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
-                            validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
-                            steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
-elif worker == 'gpu':
-    parallel_model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
-                            validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
-                            steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
-accuracy = model.evaluate(x=X_val, y=y_val_matrix, batch_size=BATCHSIZE)
+####################################### run on test set ################################################################
+model.load_weights('/home/stine/repositories/MSCCode/frogsumimodels/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+y_test_matrix = to_categorical(y_val, len(labeltonumber))
 
+accuracy = model.evaluate(x = X_val, y = y_val_matrix)
 
+print('Accuracy: {}'.format(accuracy))
+print(labeltonumber)
 
 
 
