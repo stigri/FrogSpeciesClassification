@@ -251,9 +251,11 @@ if modus == 'train':
 elif modus == 'test':
     y_test_matrix = to_categorical(y_test, len(labeltonumber))
     if worker == 'cpu':
+        print(model.metrics_names)
         model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
     elif worker == 'gpu':
+        print(parallel_model.metrics_names)
         parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
 
