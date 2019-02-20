@@ -260,9 +260,10 @@ elif modus == 'test':
         print(parallel_model.metrics_names)
         parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
-        per_class_accuracy = parallel_model.predict(X_test)
+        y_prob = parallel_model.predict(X_test)
+        y_classes = y_prob.argmax(axis=-1)
     print('Accuracy: {}'.format(accuracy))
-    print(per_class_accuracy)
+    print(y_classes)
     print(labeltonumber)
 
 
