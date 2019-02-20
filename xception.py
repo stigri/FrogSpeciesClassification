@@ -249,7 +249,7 @@ elif worker == 'gpu':
 parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
 y_test_matrix = to_categorical(y_test, len(labeltonumber))
 
-accuracy = model.evaluate(x = X_test, y = y_test_matrix)
+accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
 
 print('Accuracy: {}'.format(accuracy))
 print(labeltonumber)
