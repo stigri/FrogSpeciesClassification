@@ -246,7 +246,7 @@ elif worker == 'gpu':
 # accuracy = model.evaluate(x=X_val, y=y_val_matrix, batch_size=BATCHSIZE)
 
 ####################################### run on test set ################################################################
-model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
 y_test_matrix = to_categorical(y_test, len(labeltonumber))
 
 accuracy = model.evaluate(x = X_test, y = y_test_matrix)
