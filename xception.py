@@ -32,7 +32,7 @@ def load_data(filename):
     return X, y, labeltonumber
 
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 5:
     sys.stderr.write(
         'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu> \n')
     sys.exit(1)
@@ -40,6 +40,7 @@ else:
     mode = sys.argv[1]
     resize = sys.argv[2]
     worker = sys.argv[3]
+    modus = sys.argv[4]
 
 
 ## for tests use data_{}_{}.test.npz
@@ -228,31 +229,36 @@ elif worker == 'gpu':
 ######################################## end version 1.0 ###############################################################
 
 ######################################## version 1.1 ###################################################################
-# datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
-#
-# datagen.fit(X_train)
-# y_train_matrix = to_categorical(y_train, len(labeltonumber))
-# y_val_matrix = to_categorical(y_val, len(labeltonumber))
-#
-# if worker == 'cpu':
-#     ## use validation fold for validation
-#     model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
-#                             validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
-#                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
-# elif worker == 'gpu':
-#     parallel_model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
-#                             validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
-#                             steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
-# accuracy = model.evaluate(x=X_val, y=y_val_matrix, batch_size=BATCHSIZE)
+datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
+
+datagen.fit(X_train)
+y_train_matrix = to_categorical(y_train, len(labeltonumber))
+y_val_matrix = to_categorical(y_val, len(labeltonumber))
+
+if modus == 'train':
+    if worker == 'cpu':
+        ## use validation fold for validation
+        model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
+                                validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
+                                steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
+    elif worker == 'gpu':
+        parallel_model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
+                                validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
+                                steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
+
 
 ####################################### run on test set ################################################################
-parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
-y_test_matrix = to_categorical(y_test, len(labeltonumber))
+elif modus == 'test':
+    y_test_matrix = to_categorical(y_test, len(labeltonumber))
+    if worker == 'cpu':
+        model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+        accuracy = model.evaluate(x=X_test, y=y_test_matrix)
+    elif worker == 'gpu':
+        parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+        accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
 
-accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
-
-print('Accuracy: {}'.format(accuracy))
-print(labeltonumber)
+    print('Accuracy: {}'.format(accuracy))
+    print(labeltonumber)
 
 
 
