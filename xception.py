@@ -12,6 +12,7 @@ import numpy as np
 import sys
 import os
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 import h5py
 from sklearn.model_selection import StratifiedKFold
 from collections import Counter
@@ -254,16 +255,17 @@ elif modus == 'test':
         print(model.metrics_names)
         model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
-        per_class_accuracy = model.predict(X_test)
+        y_prob = model.predict(X_test)
+        y_pred = y_prob.argmax(axis=-1)
 
     elif worker == 'gpu':
         print(parallel_model.metrics_names)
         parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
         y_prob = parallel_model.predict(X_test)
-        y_classes = y_prob.argmax(axis=-1)
-    print('Accuracy: {}'.format(accuracy))
-    print(y_classes)
+        y_pred = y_prob.argmax(axis=-1)
+    print('loss: {}, accuracy: {}'.format(accuracy[0], accuracy[1]))
+    print(classification_report(y_test, y_pred))
     print(labeltonumber)
 
 
