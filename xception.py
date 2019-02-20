@@ -265,11 +265,9 @@ elif modus == 'test':
         y_prob = parallel_model.predict(X_test)
         y_pred = y_prob.argmax(axis=-1)
     print('loss: {}, accuracy: {}'.format(accuracy[0], accuracy[1]))
-    for label in y_test, y_pred:
-        label = labeltonumber[label]
     print(classification_report(y_test, y_pred))
-    print(labeltonumber)
-
+    for idx, label in enumerate(labeltonumber):
+        print('{}: {}'.format(idx, label))
 
 
 
