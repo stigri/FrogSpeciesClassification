@@ -254,12 +254,15 @@ elif modus == 'test':
         print(model.metrics_names)
         model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
+        per_class_accuracy = model.predict(X_test)
+
     elif worker == 'gpu':
         print(parallel_model.metrics_names)
         parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
-
+        per_class_accuracy = parallel_model.predict(X_test)
     print('Accuracy: {}'.format(accuracy))
+    print(per_class_accuracy)
     print(labeltonumber)
 
 
