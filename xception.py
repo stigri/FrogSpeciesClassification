@@ -6,11 +6,13 @@ from keras.callbacks import LearningRateScheduler
 from keras.callbacks import ModelCheckpoint
 from keras.callbacks import CSVLogger
 from keras.optimizers import Adam
+from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import sys
 import os
 from sklearn.model_selection import train_test_split
+import h5py
 from sklearn.model_selection import StratifiedKFold
 from collections import Counter
 from imblearn.over_sampling import RandomOverSampler
@@ -42,7 +44,7 @@ else:
 
 ## for tests use data_{}_{}.test.npz
 ## /home/stine/repositories
-filename = 'npz/data_{}_{}.test.npz'.format(mode, resize)
+filename = 'npz/data_{}_{}.npz'.format(mode, resize)
 X, y, labeltonumber = load_data(filename)
 
 ## Olafenwa and Olafenva - 2018 #######################
@@ -83,6 +85,7 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 # print(X_test)
 # print(y_test)
 
+
 ## define the model (preset weights)
 print('[INFO] defining model...')
 if worker == 'cpu':
@@ -90,6 +93,13 @@ if worker == 'cpu':
 elif worker == 'gpu':
     with tf.device('/cpu:0'):
         model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
+
+# if worker == 'cpu':
+#     model = load_model('/home/stine/repositories/MSCCode/frogsumimodels/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+# elif worker == 'gpu':
+#     with tf.device('/cpu:0'):
+#         model = load_model(
+#             '/home/stine/repositories/MSCCode/frogsumimodels/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
 
 ## print a summary of the model
 print(model.summary())
@@ -141,7 +151,7 @@ if not os.path.isdir(save_csvdirectory):
 
 ## join the directory with the model file
 modelpath = os.path.join(save_modeldirectory, model_name)
-## joint the directory  with the csv file
+## join the directory  with the csv file
 csvpath = os.path.join(save_csvdirectory, csv_name)
 
 ## checkpoint that saves the best weights according to the validation accuracy
@@ -222,7 +232,7 @@ elif worker == 'gpu':
 #
 # datagen.fit(X_train)
 # y_train_matrix = to_categorical(y_train, len(labeltonumber))
-y_val_matrix = to_categorical(y_val, len(labeltonumber))
+# y_val_matrix = to_categorical(y_val, len(labeltonumber))
 #
 # if worker == 'cpu':
 #     ## use validation fold for validation
@@ -236,10 +246,10 @@ y_val_matrix = to_categorical(y_val, len(labeltonumber))
 # accuracy = model.evaluate(x=X_val, y=y_val_matrix, batch_size=BATCHSIZE)
 
 ####################################### run on test set ################################################################
-model.load_weights('/home/stine/repositories/MSCCode/frogsumimodels/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
-y_test_matrix = to_categorical(y_val, len(labeltonumber))
+model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+y_test_matrix = to_categorical(y_test, len(labeltonumber))
 
-accuracy = model.evaluate(x = X_val, y = y_val_matrix)
+accuracy = model.evaluate(x = X_test, y = y_test_matrix)
 
 print('Accuracy: {}'.format(accuracy))
 print(labeltonumber)
