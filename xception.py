@@ -17,7 +17,7 @@ import h5py
 from sklearn.model_selection import StratifiedKFold
 from collections import Counter
 from imblearn.over_sampling import RandomOverSampler
-
+import pandas
 
 
 ## load X, y, labeltonumber
@@ -249,7 +249,7 @@ elif modus == 'test':
     y_test_matrix = to_categorical(y_test, len(labeltonumber))
     if worker == 'cpu':
         print(model.metrics_names)
-        model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+        model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
         ## get predicted labels for test set
         y_prob = model.predict(X_test)
@@ -257,19 +257,19 @@ elif modus == 'test':
 
     elif worker == 'gpu':
         print(parallel_model.metrics_names)
-        parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
+        parallel_model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
         ## get predicted labels for test set
         y_prob = parallel_model.predict(X_test)
         y_pred = y_prob.argmax(axis=-1)
     print('loss: {}, accuracy: {}'.format(accuracy[0], accuracy[1]))
     ## get precision, recall, f1-score and support for each class predicted on test set
-    classreport = classification_report(y_test, y_pred)
+    classreport = classification_report(y_test, y_pred, output_dict=True)
     ## print which label belongs to which species/genus
     for idx, label in enumerate(labeltonumber):
-        classreport[idx]['label'] = label
-    print(classreport)
-
+        classreport[str(idx)]['label'] = label
+    dataframe = pandas.DataFrame(classreport).transpose()
+    dataframe.to_csv(save_modeldirectory + '/Xception_genus_pad_version1.1/classreport.csv', header = ['f1-score', 'label', 'precision', 'recall', 'support'])
 
 
 
