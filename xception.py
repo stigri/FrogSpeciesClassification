@@ -35,7 +35,7 @@ def load_data(filename):
 
 if len(sys.argv) != 5:
     sys.stderr.write(
-        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu> \n')
+        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu>, <train> or <test>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
@@ -95,13 +95,6 @@ if worker == 'cpu':
 elif worker == 'gpu':
     with tf.device('/cpu:0'):
         model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
-
-# if worker == 'cpu':
-#     model = load_model('/home/stine/repositories/MSCCode/frogsumimodels/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
-# elif worker == 'gpu':
-#     with tf.device('/cpu:0'):
-#         model = load_model(
-#             '/home/stine/repositories/MSCCode/frogsumimodels/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
 
 ## print a summary of the model
 print(model.summary())
@@ -230,6 +223,8 @@ elif worker == 'gpu':
 ######################################## end version 1.0 ###############################################################
 
 ######################################## version 1.1 ###################################################################
+## first version that was used for training
+## only run for training by adding parameter 'train' when running script
 datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
 
 datagen.fit(X_train)
@@ -249,12 +244,14 @@ if modus == 'train':
 
 
 ####################################### run on test set ################################################################
+## only run for testing by adding parameter 'test' when running script
 elif modus == 'test':
     y_test_matrix = to_categorical(y_test, len(labeltonumber))
     if worker == 'cpu':
         print(model.metrics_names)
         model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
+        ## get predicted labels for test set
         y_prob = model.predict(X_test)
         y_pred = y_prob.argmax(axis=-1)
 
@@ -262,10 +259,13 @@ elif modus == 'test':
         print(parallel_model.metrics_names)
         parallel_model.load_weights(save_modeldirectory + '/Xception_species_pad_version1.1/Xception.092.0.905.hdf5')
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
+        ## get predicted labels for test set
         y_prob = parallel_model.predict(X_test)
         y_pred = y_prob.argmax(axis=-1)
     print('loss: {}, accuracy: {}'.format(accuracy[0], accuracy[1]))
+    ## get precision, recall, f1-score and support for each class predicted on test set
     print(classification_report(y_test, y_pred))
+    ## print which label belongs to which species/genus
     for idx, label in enumerate(labeltonumber):
         print('{}: {}'.format(idx, label))
 
