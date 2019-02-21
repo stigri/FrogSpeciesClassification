@@ -267,7 +267,7 @@ elif modus == 'test':
     classreport = classification_report(y_test, y_pred)
     ## print which label belongs to which species/genus
     for idx, label in enumerate(labeltonumber):
-        classreport[str(idx)]['label'] = label
+        classreport[idx]['label'] = label
     print(classreport)
 
 
