@@ -264,10 +264,11 @@ elif modus == 'test':
         y_pred = y_prob.argmax(axis=-1)
     print('loss: {}, accuracy: {}'.format(accuracy[0], accuracy[1]))
     ## get precision, recall, f1-score and support for each class predicted on test set
-    print(classification_report(y_test, y_pred))
+    classreport = classification_report(y_test, y_pred)
     ## print which label belongs to which species/genus
     for idx, label in enumerate(labeltonumber):
-        print('{}: {}'.format(idx, label))
+        classreport[str(idx)]['label'] = label
+    print(classreport)
 
 
 
