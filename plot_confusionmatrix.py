@@ -2,7 +2,7 @@ import tensorflow as tf
 from keras.applications import Xception
 from keras import activations
 from keras.utils import multi_gpu_model
-from vis import utils
+from vis.utils import utils
 import sys
 import numpy as np
 
