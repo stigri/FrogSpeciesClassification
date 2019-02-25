@@ -13,13 +13,17 @@ import sys
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import matthews_corrcoef
 import h5py
 from sklearn.model_selection import StratifiedKFold
 from collections import Counter
 from imblearn.over_sampling import RandomOverSampler
-import pandas
+import pickle
 
 
+
+############################################# function to load the data ################################################
 ## load X, y, labeltonumber
 def load_data(filename):
     print('[INFO] loading data...')
@@ -31,17 +35,20 @@ def load_data(filename):
     # print(y)
     # print(labeltonumber)
     return X, y, labeltonumber
+########################################################################################################################
 
 
-if len(sys.argv) != 5:
+################################################ main ##################################################################
+if len(sys.argv) != 6:
     sys.stderr.write(
-        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu>, <train> or <test>\n')
+        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu>, <train> or <test>, <deep> or <transfer>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
     resize = sys.argv[2]
     worker = sys.argv[3]
     modus = sys.argv[4]
+    learn = sys.argv[5]
 
 
 ## for tests use data_{}_{}.test.npz
@@ -90,11 +97,18 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 
 ## define the model (preset weights)
 print('[INFO] defining model...')
-if worker == 'cpu':
-    model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
-elif worker == 'gpu':
-    with tf.device('/cpu:0'):
+if learn == 'deep':
+    if worker == 'cpu':
         model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
+    elif worker == 'gpu':
+        with tf.device('/cpu:0'):
+            model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
+elif learn == 'transfer':
+    if worker == 'cpu':
+        model = Xception(include_top = False, weights = 'imagenet', classes = len(labeltonumber))
+    elif worker == 'gpu':
+        with tf.device('/cpu:0'):
+            model = Xception(include_top = False, weights = 'imagenet', classes = len(labeltonumber))
 
 ## print a summary of the model
 print(model.summary())
@@ -222,6 +236,7 @@ elif worker == 'gpu':
 #     accuracy = model.evaluate(x=X_train[X_test_res_idx], y=y_test_matrix, batch_size=BATCHSIZE)
 ######################################## end version 1.0 ###############################################################
 
+
 ######################################## version 1.1 ###################################################################
 ## first version that was used for training
 ## only run for training by adding parameter 'train' when running script
@@ -268,9 +283,15 @@ elif modus == 'test':
     ## print which label belongs to which species/genus
     for idx, label in enumerate(labeltonumber):
         classreport[str(idx)]['label'] = label
-    dataframe = pandas.DataFrame(classreport).transpose()
-    dataframe.to_csv(save_modeldirectory + '/Xception_genus_pad_version1.1/classreport.csv', header = ['f1-score', 'label', 'precision', 'recall', 'support'])
+    # dataframe = pandas.DataFrame(classreport).transpose()
+    # dataframe.to_csv(save_modeldirectory + '/Xception_genus_pad_version1.1/classreport.csv', header = ['f1-score', 'label', 'precision', 'recall', 'support'])
+    cnf_matrix = confusion_matrix(y_test, y_pred)
+    math_corrcoef = matthews_corrcoef(y_test, y_pred)
+    print('classreport: {}'.format(classreport))
+    print('confusion matrix: {}'.format(cnf_matrix))
+    print('Mathews corrcoef: {}'.format(math_corrcoef))
 
+    with open('{}_{}_{}_version1.1.pkl'.format(modus, mode, resize), 'wb') as di:
+        pickle.dump([classreport, cnf_matrix, math_corrcoef], di)
 
-
-    ## TODO: how to use test set for final validation
+    ## TODO: implement attribution
