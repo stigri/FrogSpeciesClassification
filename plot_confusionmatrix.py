@@ -1,3 +1,4 @@
+import tensorflow as tf
 from keras.applications import Xception
 from keras import activations
 from vis import utils
@@ -32,7 +33,8 @@ filename = 'npz/data_{}_{}.npz'.format(mode, resize)
 X, y, labeltonumber = load_data(filename)
 
 weights = 'frogsumimodels/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5'
-model = Xception(weights = weights, include_top = True)
+with tf.device('/cpu:0'):
+    model = Xception(include_top = True, weights = weights, classes=len(labeltonumber))
 
 layer_idx = utils.find_layer_idx(model, 'predictions')
 
