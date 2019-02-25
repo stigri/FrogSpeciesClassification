@@ -1,6 +1,7 @@
 import tensorflow as tf
 from keras.applications import Xception
 from keras import activations
+from keras.utils import multi_gpu_model
 from vis import utils
 import sys
 import numpy as np
@@ -34,9 +35,12 @@ X, y, labeltonumber = load_data(filename)
 
 weights = 'frogsumimodels/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5'
 with tf.device('/cpu:0'):
-    model = Xception(include_top = True, weights = weights, classes=len(labeltonumber))
+    model = Xception(include_top = True, weights = None, classes=len(labeltonumber))
 
 layer_idx = utils.find_layer_idx(model, 'predictions')
+
+model = multi_gpu_model(model, gpus=2)
+model.load_weights(weights)
 
 model.layers[layer_idx].activation = activations.linear
 model = utils.apply_modifications(model)
