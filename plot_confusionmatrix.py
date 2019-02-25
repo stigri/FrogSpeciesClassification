@@ -2,6 +2,7 @@ from keras.applications import Xception
 from keras import activations
 from vis import utils
 import sys
+import numpy as np
 
 ## load X, y, labeltonumber
 def load_data(filename):
