@@ -78,6 +78,7 @@ mkdir /tmp/data-file-init-tensorflow/
 #####################################
 
 pip3 install --upgrade keras  # https://keras.io/#installation
+pip3 install --upgrade keras-vis
 pip3 install --upgrade scikit-learn
 pip3 install --upgrade imbalanced-learn
 
