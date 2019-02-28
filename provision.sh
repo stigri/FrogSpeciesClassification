@@ -48,7 +48,7 @@ echo 'deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x8
 apt-get update
 
 # Install CUDA and tools. Include optional NCCL 2.x
-apt-get install cuda10.0 cuda-cublas-10-0 cuda-cufft-10-0 cuda-curand-10-0 cuda-cusolver-10-0 cuda-cusparse-10-0 libcudnn7 libnccl2 cuda-command-line-tools-10-0 -y
+apt-get install cuda10.0 cuda-cublas-10-0 cuda-cufft-10-0 cuda-curand-10-0 cuda-cusolver-10-0 cuda-cusparse-10-0 cuda-command-line-tools-10-0 libcudnn7=7.4.2.24-1+cuda10.0 libnccl2=2.3.7-1+cuda10.0 -y
 
 mkdir /tmp/data-file-init-cuda/
 
