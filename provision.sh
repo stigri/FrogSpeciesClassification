@@ -69,7 +69,7 @@ mkdir /tmp/data-file-init-locale/
 ### https://www.tensorflow.org/install/pip
 #pip3 install --upgrade pip
 #pip3 install --upgrade numpy # Wanted by tf-nightly-gpu, Ubuntu's python3-numpy too old.
-pip3 install --upgrade tf-nightly-gpu # tensorflow-gpu (stable) does not work with cuda 10.
+pip3 install --upgrade tf-nightly-gpu==1.13.0.dev20190119 # tensorflow-gpu (stable) does not work with cuda 10.
 
 python3 -c "import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))" > /tmp/verify-tf.txt
 
