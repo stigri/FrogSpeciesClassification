@@ -264,7 +264,8 @@ elif modus == 'test':
     y_test_matrix = to_categorical(y_test, len(labeltonumber))
     if worker == 'cpu':
         print(model.metrics_names)
-        model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
+        #model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
+        model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.cpu.hdf5')
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
         ## get predicted labels for test set
         y_prob = model.predict(X_test)
