@@ -56,7 +56,7 @@ norm_img = img_attr - mean
 print('[INFO] create model and load weights ...')
 weights = 'frogsumimodels/Xception_genus_pad_version1.2/Xception.100.0.941.hdf5'
 # with tf.device('/cpu:0'):
-model = Xception(include_top = True, weights = weights)
+model = Xception(include_top = True, weights = weights, classes = len(img_attr))
 
 # model = multi_gpu_model(model, gpus=2)
 # model.load_weights(weights)
