@@ -80,6 +80,6 @@ for idx, img in enumerate(norm_img):
     # img = np.expand_dims(img, axis = 0)
     print(img.shape)
     grads = visualize_cam(model, layer_idx, filter_indices = idx, seed_input = img, backprop_modifier = 'relu')
-    jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
+    jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 299)
     plt.imshow(overlay(jet_heatmap, img))
     plt.show()
