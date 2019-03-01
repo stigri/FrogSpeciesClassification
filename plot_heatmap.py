@@ -73,7 +73,6 @@ print(model.input)
 print('[INFO] start plotting ...')
 penultimate_layer = utils.find_layer_idx(model, 'block14_sepconv2')
 plt.figure()
-x = np.ndarray((299, 299, 3), dtype=int)
 for idx, img in enumerate(norm_img):
     print(norm_img[idx].shape)
     # plt.imshow(img)
