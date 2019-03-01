@@ -240,12 +240,14 @@ elif worker == 'gpu':
 ######################################## version 1.1 ###################################################################
 ## first version that was used for training
 ## only run for training by adding parameter 'train' when running script
+print('[INFO] generating data...')
 datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
 
 datagen.fit(X_train)
 y_train_matrix = to_categorical(y_train, len(labeltonumber))
 y_val_matrix = to_categorical(y_val, len(labeltonumber))
 
+print('[INFO] start training...')
 if modus == 'train':
     if worker == 'cpu':
         ## use validation fold for validation
