@@ -53,13 +53,15 @@ norm_img = img_attr - mean
 # filename = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
 # img_attr = load_img_attr_data(filename)
 
-weights = 'frogsumimodels/Xception_genus_pad_version1.1/Xception.109.0.964.cpu.hdf5'
+print('[INFO] create model and load weights ...')
+weights = 'frogsumimodels/Xception_genus_pad_version1.2/Xception.100.0.941.hdf5'
 # with tf.device('/cpu:0'):
 model = Xception(include_top = True, weights = weights)
 
 # model = multi_gpu_model(model, gpus=2)
 # model.load_weights(weights)
 
+print('[INFO] change activations of last layer to linear ...')
 layer_idx = utils.find_layer_idx(model, 'predictions')
 model.layers[layer_idx].activation = activations.linear
 model = utils.apply_modifications(model)
@@ -68,7 +70,7 @@ model = utils.apply_modifications(model)
 print(model.summary())
 print(model.input)
 
-
+print('[INFO] start plotting ...')
 penultimate_layer = utils.find_layer_idx(model, 'block14_sepconv2')
 plt.figure()
 x = np.ndarray((299, 299, 3), dtype=int)
@@ -78,7 +80,7 @@ for idx, img in enumerate(norm_img):
     # plt.show()
     # img = np.expand_dims(img, axis = 0)
     print(img.shape)
-    grads = visualize_cam(model, layer_idx, filter_indices = idx, seed_input = x, backprop_modifier = 'relu')
+    grads = visualize_cam(model, layer_idx, filter_indices = idx, seed_input = img, backprop_modifier = 'relu')
     jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
     plt.imshow(overlay(jet_heatmap, img))
     plt.show()
