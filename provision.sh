@@ -101,6 +101,11 @@ mkdir /tmp/data-file-init-git-clone/
 
 sudo -u stine echo "termcapinfo xterm* ti@:te@" > /home/stine/.screenrc
 
+#####################################
+
+## install pycharm-community IDE
+snap install pycharm-community --classic
+
 ## Lastly, mark the completion of this script
 touch /home/stine/.cloud-warnings.skip
 mkdir /tmp/data-file-init-complete/
