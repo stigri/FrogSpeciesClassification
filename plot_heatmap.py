@@ -54,7 +54,7 @@ norm_img = img_attr - mean
 # img_attr = load_img_attr_data(filename)
 
 print('[INFO] create model and load weights ...')
-weights = 'frogsumimodels/Xception_genus_pad_version1.2/Xception.100.0.941.hdf5'
+weights = 'Xception.100.0.941.hdf5'
 # with tf.device('/cpu:0'):
 model = Xception(include_top = True, weights = weights, classes = len(img_attr))
 
@@ -74,12 +74,14 @@ print('[INFO] start plotting ...')
 penultimate_layer = utils.find_layer_idx(model, 'block14_sepconv2')
 plt.figure()
 for idx, img in enumerate(norm_img):
-    print(norm_img[idx].shape)
+    print('attr image shape: {}'.format(img_attr))
     # plt.imshow(img)
     # plt.show()
     # img = np.expand_dims(img, axis = 0)
-    print(img.shape)
+    print('norm image shape: {}'.format(img.shape))
     grads = visualize_cam(model, layer_idx, filter_indices = idx, seed_input = img, backprop_modifier = 'relu')
-    jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 299)
+    print('grads shape: {}'.format(grads.shape))
+    jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
+    print('heatmap shape: {}'.format(jet_heatmap.shape))
     plt.imshow(overlay(jet_heatmap, img))
     plt.show()
