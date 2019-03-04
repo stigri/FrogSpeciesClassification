@@ -1,3 +1,6 @@
+## original code: https://github.com/raghakot/keras-vis/blob/master/examples/resnet/attention.ipynb
+## reads img_attr, calculates and visualizes cam for attribution. Saves cam heatmap images in .npz file to overlay with original images
+
 import tensorflow as tf
 from keras.applications import Xception
 from keras import activations
@@ -11,6 +14,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import keras.backend as K
 
+
 ## load X, y, labeltonumber
 # def load_all_data(filename):
 #     print('[INFO] loading data...')
@@ -23,6 +27,7 @@ import keras.backend as K
 #     # print(labeltonumber)
 #     return X, y, labeltonumber
 
+## function to load images img_attr containing one image of each class of test set
 def load_img_attr_data(filename):
     print('[INFO] loading data...')
     npzfile = np.load(filename)
@@ -30,6 +35,7 @@ def load_img_attr_data(filename):
     return img_attr
 
 
+## reads parameter which describe if species or genera images are needed
 if len(sys.argv) != 3:
     sys.stderr.write(
         'Usage: xception.py <species> or <genus>, <pad> or <distort>\n')
@@ -41,9 +47,9 @@ else:
 filename = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
 img_attr = load_img_attr_data(filename)
 
-
+## normalizes images used for attribution
 norm_img = img_attr.astype('float32') / 255
-mean = img_attr.mean(axis = 0)
+mean = img_attr.mean(axis=0)
 norm_img = img_attr - mean
 
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 42, stratify = y)
@@ -53,39 +59,48 @@ norm_img = img_attr - mean
 # filename = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
 # img_attr = load_img_attr_data(filename)
 
+## creates model used for training and loads weights
 print('[INFO] create model and load weights ...')
 weights = 'Xception.100.0.941.hdf5'
 # with tf.device('/cpu:0'):
-model = Xception(include_top = True, weights = weights, classes = len(img_attr))
+model = Xception(include_top=True, weights=weights, classes=len(img_attr))
 
 # model = multi_gpu_model(model, gpus=2)
 # model.load_weights(weights)
 
+## changes last layer activation from softmax to linear to improve attribution results
 print('[INFO] change activations of last layer to linear ...')
 layer_idx = utils.find_layer_idx(model, 'predictions')
 model.layers[layer_idx].activation = activations.linear
 model = utils.apply_modifications(model)
 
-
 print(model.summary())
 print(model.input)
 
 print('[INFO] start plotting ...')
+## defines last convolutional layer before dense layers
 penultimate_layer = utils.find_layer_idx(model, 'block14_sepconv2')
 plt.figure()
+
+## iterates over all images in array
 for idx, img in enumerate(norm_img):
     print('attr image shape: {}'.format(img_attr))
     # plt.imshow(img)
     # plt.show()
     # img = np.expand_dims(img, axis = 0)
     print('norm image shape: {}'.format(img.shape))
-    grads = visualize_cam(model, layer_idx, filter_indices = idx, seed_input = img, backprop_modifier = 'relu')
+    ## generates a gradient based class activation map (grad-CAM) that maximizes the outputs of filter_indices in layer_idx
+    ## returns the heatmap image indicating the input regions whose change would most contribute towards maximizing the output of filter_indices
+    grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=img, backprop_modifier='relu')
     print('grads shape: {}'.format(grads.shape))
+    ## overlays heatmap onto original image
     jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
     print('heatmap shape: {}'.format(jet_heatmap.shape))
     plt.imshow(overlay(jet_heatmap, img))
     plt.show()
+    ## creates empty array to store heatmaps
     img_heatmap = np.ndarray(shape=(len(img_attr), 299, 299, 1), dtype=int)
     img_heatmap[idx] = jet_heatmap
 
-np.savez_compressed('img_heatmap_{}_{}'.format(mode, resize), img_heatmap = img_heatmap)
+## saves heatmap array as .npz file
+np.savez_compressed('img_heatmap_{}_{}'.format(mode, resize), img_heatmap=img_heatmap)
