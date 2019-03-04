@@ -1,3 +1,13 @@
+## Code to train model Xception
+## parameter:
+## <species> or <genus> to define if CNN learns classes of species or classes of genera and which images to use
+## <pad> or <distort> defines how images were scaled to 299X299 by padding black rim or by distoting the image
+## <gpu> or <cpu> defines is code runs parallel (gpu) or on single gpu or cpu (cpu)
+## <train> or <test> defines if code is used for training or testing
+## <deep> or <transfer> defines if used to train the whole model (deep) or to use transfer learning
+## to define which gpu is to be used call prgramm with: CUDA_VISIBLE_DEVICES=gpuid python3 xception.py ... gpuid = 0 or 1
+
+
 import tensorflow as tf
 from keras.utils import to_categorical
 from keras.utils import multi_gpu_model
@@ -39,7 +49,7 @@ def load_data(filename):
 
 
 ################################################ main ##################################################################
-if len(sys.argv) != 6:
+if len(sys.argv) != 7:
     sys.stderr.write(
         'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu>, <train> or <test>, <deep> or <transfer>\n')
     sys.exit(1)
