@@ -85,3 +85,7 @@ for idx, img in enumerate(norm_img):
     print('heatmap shape: {}'.format(jet_heatmap.shape))
     plt.imshow(overlay(jet_heatmap, img))
     plt.show()
+    img_heatmap = np.ndarray(shape=(len(img_attr), 299, 299, 1), dtype=int)
+    img_heatmap[idx] = jet_heatmap
+
+np.savez_compressed('img_heatmap_{}_{}'.format(mode, resize), img_heatmap = img_heatmap)
