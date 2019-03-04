@@ -1,5 +1,6 @@
-## original code: https://github.com/raghakot/keras-vis/blob/master/examples/resnet/attention.ipynb
+## original code to cite: https://github.com/raghakot/keras-vis/blob/master/examples/resnet/attention.ipynb
 ## reads img_attr, calculates and visualizes cam for attribution. Saves cam heatmap images in .npz file to overlay with original images
+## code only runs if model is trained on cpu or single gpu. If trained parallely on multiole gpus it does not run.
 
 import tensorflow as tf
 from keras.applications import Xception
