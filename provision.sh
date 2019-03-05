@@ -54,7 +54,7 @@ mkdir /tmp/data-file-init-cuda/
 
 #####################################
 
-apt-get install --no-install-recommends mate-desktop-environment-extras x2gomatebindings x2goserver x2goserver-xsession x2goserver-extensions sshfs mc zip unzip git git-lfs htop numactl screen python3-opencv python3-matplotlib python3-dev python3-pip python3-setuptools -y
+apt-get install --no-install-recommends snapd mate-desktop-environment-extras x2gomatebindings x2goserver x2goserver-xsession x2goserver-extensions sshfs mc zip unzip git git-lfs htop numactl screen python3-opencv python3-matplotlib python3-dev python3-pip python3-setuptools -y
 
 mkdir /tmp/data-file-init-install/
 
