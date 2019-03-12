@@ -49,7 +49,7 @@ def load_data(filename):
 
 
 ################################################ main ##################################################################
-if len(sys.argv) != 7:
+if len(sys.argv) != 6:
     sys.stderr.write(
         'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu>, <train> or <test>, <deep> or <transfer>\n')
     sys.exit(1)
@@ -154,7 +154,7 @@ def lr_schedule(epoch):
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 ## directory in which to create models
-save_modeldirectory = os.path.join(os.getcwd(), 'frogsumimodels')
+save_modeldirectory = os.path.join(os.getcwd(), 'frogsumimodels/{}'.format(mode))
 save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs')
 
 ## name of model files
