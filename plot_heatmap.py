@@ -72,7 +72,7 @@ if modus == 'save':
 
     ## creates model used for training and loads weights
     print('[INFO] create model and load weights ...')
-    weights = 'Xception.100.0.941.hdf5'
+    weights = 'frogsumimodels/Xception_genus_pad_version1.2/Xception.100.0.941.hdf5'
     # with tf.device('/cpu:0'):
     model = Xception(include_top=True, weights=weights, classes=len(img_attr))
 
@@ -110,7 +110,7 @@ if modus == 'save':
         # plt.imshow(overlay(jet_heatmap, img))
         # plt.show()
         ## creates empty array to store heatmaps
-        img_heatmap = np.ndarray(shape=(len(img_attr), 299, 299, 3), dtype=int)
+        img_heatmap = np.ndarray(shape=(len(img_attr), 299, 299, 3), dtype=float)
         img_heatmap[idx] = grads
 
     ## saves heatmap array as .npz file
