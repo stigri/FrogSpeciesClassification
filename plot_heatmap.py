@@ -39,7 +39,7 @@ def load_img_heatmaps(heatmaps):
     print('[INFO] loading heatmaps...')
     npzfile = np.load(heatmaps)
     img_heatmaps = npzfile['img_heatmap']
-    print(img_heatmaps.shape)
+    # print(img_heatmaps.shape)
     return img_heatmaps
 
 
@@ -119,7 +119,12 @@ if modus == 'save':
 elif modus == 'show':
     img_heatmaps = load_img_heatmaps(heatmaps)
     for idx, img in enumerate(img_attr):
-        jet_heatmap = np.uint8(cm.jet(img_heatmaps[idx])[..., :3] * 255)
-        plt.imshow(jet_heatmap)
+        print(img_heatmaps[idx])
+        # jet_heatmap = np.uint8(cm.jet(img_heatmaps[idx])[..., :3] * 255)
+        cmjet = cm.jet(img_heatmaps[idx])
+        sliced = cmjet[..., :3]
+        multiplied = sliced * 255
+        united = np.uint8(multiplied)
+        plt.imshow(united)
         plt.show()
 
