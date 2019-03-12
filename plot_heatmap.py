@@ -54,7 +54,7 @@ else:
     modus = sys.argv[3]
 
 images = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
-heatmaps = 'img_heatmap_{}_{}.npz'.format(mode, resize)
+heatmaps = 'npz/img_heatmap_{}_{}.npz'.format(mode, resize)
 img_attr = load_img_attr_data(images)
 
 if modus == 'save':
