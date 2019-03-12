@@ -104,13 +104,22 @@ if modus == 'save':
         ## returns the heatmap image indicating the input regions whose change would most contribute towards maximizing the output of filter_indices
         grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=img, backprop_modifier='relu')
         print('grads shape: {}'.format(grads.shape))
+        # plt.imshow(grads)
+        # plt.show()
         ## overlays heatmap onto original image
         # jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
-        # print('heatmap shape: {}'.format(jet_heatmap.shape))
-        # plt.imshow(overlay(jet_heatmap, img))
+        # cmjet = cm.jet(grads)
+        # print('cm.jet shape: {}'.format(cmjet.shape))
+        # sliced = cmjet[..., :3]
+        # print('sliced shape: {}'.format(sliced.shape))
+        # multiplied = sliced * 255
+        # print('multiplied shape: {}'.format(multiplied.shape))
+        # united = np.uint8(multiplied)
+        # print('united shape: {}'.format(united.shape))
+        # plt.imshow(overlay(united, img))
         # plt.show()
         ## creates empty array to store heatmaps
-        img_heatmap = np.ndarray(shape=(len(img_attr), 299, 299, 3), dtype=float)
+        img_heatmap = np.ndarray(shape=(len(img_attr), 299, 299, 3), dtype=int)
         img_heatmap[idx] = grads
 
     ## saves heatmap array as .npz file
