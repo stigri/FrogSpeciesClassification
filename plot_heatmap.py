@@ -91,7 +91,7 @@ if modus == 'save':
     print('[INFO] start plotting ...')
     ## defines last convolutional layer before dense layers
     penultimate_layer = utils.find_layer_idx(model, 'block14_sepconv2')
-    plt.figure()
+
 
     ## iterates over all images in array
     for idx, img in enumerate(norm_img):
