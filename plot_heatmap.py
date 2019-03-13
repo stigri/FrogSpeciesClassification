@@ -92,35 +92,18 @@ if modus == 'save':
     ## defines last convolutional layer before dense layers
     penultimate_layer = utils.find_layer_idx(model, 'block14_sepconv2')
 
-
+    img_heatmap = []
     ## iterates over all images in array
     for idx, img in enumerate(norm_img):
         print('attr image shape: {}'.format(img_attr))
         # plt.imshow(img)
         # plt.show()
-        # img = np.expand_dims(img, axis = 0)
         print('norm image shape: {}'.format(img.shape))
         ## generates a gradient based class activation map (grad-CAM) that maximizes the outputs of filter_indices in layer_idx
         ## returns the heatmap image indicating the input regions whose change would most contribute towards maximizing the output of filter_indices
         grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=img, backprop_modifier='relu')
         print('grads shape: {}'.format(grads.shape))
-        # plt.imshow(grads)
-        # plt.show()
-        ## overlays heatmap onto original image
-        # jet_heatmap = np.uint8(cm.jet(grads)[ :, :, :, 0] * 255)
-        # cmjet = cm.jet(grads)
-        # print('cm.jet shape: {}'.format(cmjet.shape))
-        # sliced = cmjet[ :, :, :, 0]
-        # print('sliced shape: {}'.format(sliced.shape))
-        # multiplied = sliced * 255
-        # print('multiplied shape: {}'.format(multiplied.shape))
-        # united = np.uint8(multiplied)
-        # print('united shape: {}'.format(united.shape))
-        # plt.imshow(overlay(united, img))
-        # plt.show()
-        ## creates empty array to store heatmaps
-        img_heatmap = np.ndarray(shape=(len(img_attr), 299, 299, 3), dtype=int)
-        img_heatmap[idx] = grads
+        img_heatmap.append(grads)
 
     ## saves heatmap array as .npz file
     np.savez_compressed('img_heatmap_{}_{}'.format(mode, resize), img_heatmap=img_heatmap)
