@@ -39,7 +39,7 @@ def load_img_heatmaps(heatmaps):
     print('[INFO] loading heatmaps...')
     npzfile = np.load(heatmaps)
     img_heatmaps = npzfile['img_heatmap']
-    # print(img_heatmaps.shape)
+    print(img_heatmaps.shape)
     return img_heatmaps
 
 
@@ -107,10 +107,10 @@ if modus == 'save':
         # plt.imshow(grads)
         # plt.show()
         ## overlays heatmap onto original image
-        # jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
+        # jet_heatmap = np.uint8(cm.jet(grads)[ :, :, :, 0] * 255)
         # cmjet = cm.jet(grads)
         # print('cm.jet shape: {}'.format(cmjet.shape))
-        # sliced = cmjet[..., :3]
+        # sliced = cmjet[ :, :, :, 0]
         # print('sliced shape: {}'.format(sliced.shape))
         # multiplied = sliced * 255
         # print('multiplied shape: {}'.format(multiplied.shape))
@@ -128,12 +128,17 @@ if modus == 'save':
 elif modus == 'show':
     img_heatmaps = load_img_heatmaps(heatmaps)
     for idx, img in enumerate(img_attr):
-        # print(img_heatmaps[idx])
+        heatmap = img_heatmaps[idx]
+        # print(img)
         # jet_heatmap = np.uint8(cm.jet(img_heatmaps[idx])[..., :3] * 255)
-        # cmjet = cm.jet(img_heatmaps[idx])
-        # sliced = cmjet[..., :3]
-        # multiplied = sliced * 255
-        # united = np.uint8(multiplied)
-        plt.imshow(img_heatmaps[idx])
+        print('y')
+        cmjet = cm.jet(heatmap)
+        sliced = cmjet[ :, :, :, 0]
+        multiplied = sliced * 255
+        united = np.uint8(multiplied)
+        print(united)
+        plt.imshow(overlay(united, img))
+        # plt.show(united)
+        print('x')
         plt.show()
 
