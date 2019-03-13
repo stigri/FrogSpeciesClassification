@@ -112,16 +112,6 @@ elif modus == 'show':
     img_heatmaps = load_img_heatmaps(heatmaps)
     for idx, img in enumerate(img_attr):
         heatmap = img_heatmaps[idx]
-        # print(img)
-        # jet_heatmap = np.uint8(cm.jet(img_heatmaps[idx])[..., :3] * 255)
-        print('y')
-        cmjet = cm.jet(heatmap)
-        sliced = cmjet[ :, :, :, 0]
-        multiplied = sliced * 255
-        united = np.uint8(multiplied)
-        print(united)
-        plt.imshow(overlay(united, img))
-        # plt.show(united)
-        print('x')
+        plt.imshow(overlay(heatmap, img))
         plt.show()
 
