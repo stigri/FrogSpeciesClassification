@@ -31,13 +31,12 @@ def plot_confusion_matrix(cm, classes,
         print('Confusion matrix, without normalization')
 
     print(cm)
-
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.imshow(cm, aspect='auto', interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=90)
-    plt.yticks(tick_marks, classes)
+    plt.xticks(np.arange(len(classes)))
+    plt.xticks(np.arange(len(classes)), classes, rotation=30, horizontalalignment = 'right')
+    plt.yticks(np.arange(len(classes)), classes)
 
     fmt = '.2f' if normalize else 'd'
     thresh = cm.max() / 2.
