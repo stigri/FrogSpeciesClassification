@@ -88,7 +88,7 @@ if modus == 'save':
     print(model.summary())
     print(model.input)
 
-    print('[INFO] start plotting ...')
+    print('[INFO] calculate cam ...')
     ## defines last convolutional layer before dense layers
     penultimate_layer = utils.find_layer_idx(model, 'block14_sepconv2')
 
