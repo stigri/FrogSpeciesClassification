@@ -90,8 +90,10 @@ def prepare_images(directory, resize, length, mode):
                     metadata.read()
                     tag = metadata['Exif.Photo.UserComment']
                     genus_species = tag.value
+                    genus_species = genus_species.strip()
                     match = re.search(r'(\w+)\s(\w+)', genus_species)
                     genus = match.group(1)
+                    genus = genus.strip()
                     ## if given mode is genus create dictionary with all genera as keys and numbers 1-n as value
                     if mode == 'genus':
                         label = genus
