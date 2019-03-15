@@ -52,16 +52,17 @@ def plot_confusion_matrix(cm, classes,
 
 
 
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     sys.stderr.write(
-        'Usage: xception.py <species> or <genus>, <pad> or <distort>\n')
+        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <version>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
     resize = sys.argv[2]
+    version = sys.argv[3]
 
 
-path = 'frogsumimodels/Xception_{}_{}_version1.1/test_{}_{}_version1.1.pkl'.format(mode, resize, mode, resize)
+path = 'frogsumimodels/Xception_{}_{}_version{}/test_{}_{}_version{}.pkl'.format(mode, resize, version, mode, resize, version)
 
 with open(path, 'rb') as f:
     classreport, cnf_matrix, math_corrcoef = pickle.load(f)
