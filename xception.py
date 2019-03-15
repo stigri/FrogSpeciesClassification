@@ -307,7 +307,7 @@ elif modus == 'test':
     print('y_prob: {}'.format(y_prob))
     print('y_pred: {}'.format(y_pred))
 
-    with open('{}_{}_{}_version1.1.pkl'.format(modus, mode, resize), 'wb') as di:
+    with open('{}_{}_{}_version{}.pkl'.format(modus, mode, resize, version), 'wb') as di:
         pickle.dump([classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
 
     ## TODO: implement attribution
