@@ -49,9 +49,9 @@ def load_data(filename):
 
 
 ################################################ main ##################################################################
-if len(sys.argv) != 6:
+if len(sys.argv) != 7:
     sys.stderr.write(
-        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <gpu> or <cpu>, <train> or <test>, <deep> or <transfer>\n')
+        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <single> or <parallel>, <train> or <test>, <deep> or <transfer>, <version>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
@@ -59,6 +59,7 @@ else:
     worker = sys.argv[3]
     modus = sys.argv[4]
     learn = sys.argv[5]
+    version = sys.argv[6]
 
 
 ## for tests use data_{}_{}.test.npz
@@ -154,12 +155,12 @@ def lr_schedule(epoch):
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 ## directory in which to create models
-save_modeldirectory = os.path.join(os.getcwd(), 'frogsumimodels/{}'.format(mode))
+save_modeldirectory = os.path.join(os.getcwd(), 'frogsumimodels/Xception_{}_{}_version{}'.format(mode, resize, version))
 save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs')
 
 ## name of model files
 model_name = 'Xception.{epoch:03d}.{val_acc:.3f}.hdf5'
-csv_name = 'Xception_{}_{}.csv'.format(mode, resize)
+csv_name = 'Xception_{}_{}_version{}.csv'.format(mode, resize, version)
 
 ## create directory to save models if it does not exist
 if not os.path.isdir(save_modeldirectory):
