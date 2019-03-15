@@ -310,4 +310,13 @@ elif modus == 'test':
     with open('{}_{}_{}_version{}.pkl'.format(modus, mode, resize, version), 'wb') as di:
         pickle.dump([classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
 
-    ## TODO: implement attribution
+    ## To see which approach works best:
+    ## 1. mathews corrcoef (use to decide which approach works best)
+    ## 2. accuracy (use to decide when to stop training and for the sake of completeness)
+    ## 3. f1 (for the sake of completeness)
+    ## To decide which new approaches I should try next:
+    ## 1. confusion matrix
+    ## 2. heatmaps of testset in list with same order as testset
+    ## 3. list of predicted labels in same order as testset
+    ## 4. list of probabilities in same order as testset
+
