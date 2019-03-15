@@ -49,9 +49,9 @@ def load_data(filename):
 
 
 ################################################ main ##################################################################
-if len(sys.argv) != 7:
+if len(sys.argv) != 8:
     sys.stderr.write(
-        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <single> or <parallel>, <train> or <test>, <deep> or <transfer>, <version>\n')
+        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <single> or <parallel>, <train> or <test>, <deep> or <transfer>, <version>, <weightfile>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
@@ -60,6 +60,7 @@ else:
     modus = sys.argv[4]
     learn = sys.argv[5]
     version = sys.argv[6]
+    weightfile = sys.argv[7]
 
 
 ## for tests use data_{}_{}.test.npz
@@ -278,7 +279,7 @@ elif modus == 'test':
     if worker == 'single':
         print(model.metrics_names)
         #model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
-        model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.cpu.hdf5')
+        model.load_weights(save_modeldirectory + '/Xception_{}_{}_version{}/{}'.format(mode, resize, version, weightfile))
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
         ## get predicted labels for test set
         y_prob = model.predict(X_test)
@@ -286,7 +287,7 @@ elif modus == 'test':
 
     elif worker == 'parallel':
         print(parallel_model.metrics_names)
-        parallel_model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
+        parallel_model.load_weights(save_modeldirectory + '/Xception_{}_{}_version{}/{}'.format(mode, resize, version, weightfile))
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
         ## get predicted labels for test set
         y_prob = parallel_model.predict(X_test)
