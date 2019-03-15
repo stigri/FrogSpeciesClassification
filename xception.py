@@ -109,15 +109,15 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 ## define the model (preset weights)
 print('[INFO] defining model...')
 if learn == 'deep':
-    if worker == 'cpu':
+    if worker == 'single':
         model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
-    elif worker == 'gpu':
+    elif worker == 'parallel':
         with tf.device('/cpu:0'):
             model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
 elif learn == 'transfer':
-    if worker == 'cpu':
+    if worker == 'single':
         model = Xception(include_top = False, weights = 'imagenet', classes = len(labeltonumber))
-    elif worker == 'gpu':
+    elif worker == 'parallel':
         with tf.device('/cpu:0'):
             model = Xception(include_top = False, weights = 'imagenet', classes = len(labeltonumber))
 
@@ -181,11 +181,11 @@ checkpoint = ModelCheckpoint(filepath=modelpath, monitor='val_acc', verbose=1, s
 csv_logger = CSVLogger(filename=csvpath, separator=',', append=True)
 
 print('[INFO] compiling model...')
-if worker == 'cpu':
+if worker == 'single':
 ## Adam or RMSProp with step learning rate decay:
 ## https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rate-methods-for-deep-learning-2c8f433990d1
     model.compile(optimizer=Adam(lr_schedule(0)), loss='categorical_crossentropy', metrics=['accuracy'])
-elif worker == 'gpu':
+elif worker == 'parallel':
     parallel_model = multi_gpu_model(model, gpus = 2)
     parallel_model.compile(optimizer=Adam(lr_schedule(0)), loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -260,12 +260,12 @@ y_val_matrix = to_categorical(y_val, len(labeltonumber))
 
 print('[INFO] start training...')
 if modus == 'train':
-    if worker == 'cpu':
+    if worker == 'single':
         ## use validation fold for validation
         model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
                                 validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
                                 steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
-    elif worker == 'gpu':
+    elif worker == 'parallel':
         parallel_model.fit_generator(datagen.flow(X_train, y_train_matrix, batch_size=BATCHSIZE),
                                 validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
                                 steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
@@ -275,7 +275,7 @@ if modus == 'train':
 ## only run for testing by adding parameter 'test' when running script
 elif modus == 'test':
     y_test_matrix = to_categorical(y_test, len(labeltonumber))
-    if worker == 'cpu':
+    if worker == 'single':
         print(model.metrics_names)
         #model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
         model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.cpu.hdf5')
@@ -284,7 +284,7 @@ elif modus == 'test':
         y_prob = model.predict(X_test)
         y_pred = y_prob.argmax(axis=-1)
 
-    elif worker == 'gpu':
+    elif worker == 'parallel':
         print(parallel_model.metrics_names)
         parallel_model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
