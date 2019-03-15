@@ -44,14 +44,16 @@ def load_img_heatmaps(heatmaps):
 
 
 ## reads parameter which describe if species or genera images are needed
-if len(sys.argv) != 4:
+if len(sys.argv) != 6:
     sys.stderr.write(
-        'Usage: plot_heatmap.py <species> or <genus>, <pad> or <distort>, <save> or <show>\n')
+        'Usage: plot_heatmap.py <species> or <genus>, <pad> or <distort>, <save> or <show>, <version>, <weightfile>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
     resize = sys.argv[2]
     modus = sys.argv[3]
+    version = sys.argv[4]
+    weightfile = sys.argv[5]
 
 path = 'frogsumimodels/Xception_{}_{}_version{}'.format(mode, resize, version)
 # images = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
@@ -75,7 +77,7 @@ if modus == 'save':
 
     ## creates model used for training and loads weights
     print('[INFO] create model and load weights ...')
-    weights = 'frogsumimodels/Xception_genus_pad_version1.2/Xception.100.0.941.hdf5'
+    weights = path + weightfile
     # with tf.device('/cpu:0'):
     model = Xception(include_top=True, weights=weights, classes=len(img))
 
