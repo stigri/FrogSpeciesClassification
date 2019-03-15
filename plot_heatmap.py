@@ -17,16 +17,16 @@ import keras.backend as K
 
 
 ## load X, y, labeltonumber
-# def load_all_data(filename):
-#     print('[INFO] loading data...')
-#     npzfile = np.load(filename)
-#     X = npzfile['X']
-#     y = npzfile['y']
-#     labeltonumber = npzfile['labeltonumber']
-#     # print(X)
-#     # print(y)
-#     # print(labeltonumber)
-#     return X, y, labeltonumber
+def load_all_data(filename):
+    print('[INFO] loading data...')
+    npzfile = np.load(filename)
+    X = npzfile['X']
+    y = npzfile['y']
+    labeltonumber = npzfile['labeltonumber']
+    # print(X)
+    # print(y)
+    # print(labeltonumber)
+    return X, y, labeltonumber
 
 ## function to load images img_attr containing one image of each class of test set
 def load_img_attr_data(images):
@@ -53,15 +53,18 @@ else:
     resize = sys.argv[2]
     modus = sys.argv[3]
 
-images = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
-heatmaps = 'npz/img_heatmap_{}_{}.npz'.format(mode, resize)
-img_attr = load_img_attr_data(images)
+path = 'frogsumimodels/Xception_{}_{}_version{}'.format(mode, resize, version)
+# images = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
+images = 'npz/data_{}_{}.npz'.format(mode, resize)
+heatmaps = 'frogsumimodels/Xception_{}_{}_version{}/img_heatmap_{}_{}_version{}.npz'.format(mode, resize, version, mode, resize, version)
+# img = load_img_attr_data(images)
+img = load_all_data(images)
 
 if modus == 'save':
     ## normalizes images used for attribution
-    norm_img = img_attr.astype('float32') / 255
-    mean = img_attr.mean(axis=0)
-    norm_img = img_attr - mean
+    norm_img = img.astype('float32') / 255
+    mean = img.mean(axis=0)
+    norm_img = img - mean
 
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 42, stratify = y)
     # print(y_test)
@@ -74,7 +77,7 @@ if modus == 'save':
     print('[INFO] create model and load weights ...')
     weights = 'frogsumimodels/Xception_genus_pad_version1.2/Xception.100.0.941.hdf5'
     # with tf.device('/cpu:0'):
-    model = Xception(include_top=True, weights=weights, classes=len(img_attr))
+    model = Xception(include_top=True, weights=weights, classes=len(img))
 
     # model = multi_gpu_model(model, gpus=2)
     # model.load_weights(weights)
@@ -94,23 +97,23 @@ if modus == 'save':
 
     img_heatmap = []
     ## iterates over all images in array
-    for idx, img in enumerate(norm_img):
-        print('attr image shape: {}'.format(img_attr))
+    for idx, img in enumerate(img):
+        print('image shape: {}'.format(img))
         # plt.imshow(img)
         # plt.show()
-        print('norm image shape: {}'.format(img.shape))
+        print('norm image shape: {}'.format(norm_img.shape))
         ## generates a gradient based class activation map (grad-CAM) that maximizes the outputs of filter_indices in layer_idx
         ## returns the heatmap image indicating the input regions whose change would most contribute towards maximizing the output of filter_indices
-        grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=img, backprop_modifier='relu')
+        grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=norm_img, backprop_modifier='relu')
         print('grads shape: {}'.format(grads.shape))
         img_heatmap.append(grads)
 
     ## saves heatmap array as .npz file
-    np.savez_compressed('img_heatmap_{}_{}'.format(mode, resize), img_heatmap=img_heatmap)
+    np.savez_compressed('img_heatmap_{}_{}_version{}'.format(mode, resize, version), img_heatmap=img_heatmap)
 
 elif modus == 'show':
     img_heatmaps = load_img_heatmaps(heatmaps)
-    for idx, img in enumerate(img_attr):
+    for idx, img in enumerate(img):
         heatmap = img_heatmaps[idx]
         plt.imshow(overlay(heatmap, img))
         plt.show()
