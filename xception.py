@@ -5,7 +5,7 @@
 ## <gpu> or <cpu> defines is code runs parallel (gpu) or on single gpu or cpu (cpu)
 ## <train> or <test> defines if code is used for training or testing
 ## <deep> or <transfer> defines if used to train the whole model (deep) or to use transfer learning
-## to define which gpu is to be used call prgramm with: CUDA_VISIBLE_DEVICES=gpuid python3 xception.py ... gpuid = 0 or 1
+## to define which gpu is to be used call prgramm with:  gpuid python3 xception.py ... gpuid = 0 or 1
 
 
 import tensorflow as tf
@@ -156,7 +156,7 @@ lr_scheduler = LearningRateScheduler(lr_schedule)
 
 ## directory in which to create models
 save_modeldirectory = os.path.join(os.getcwd(), 'frogsumimodels/Xception_{}_{}_version{}'.format(mode, resize, version))
-save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs')
+save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs/Xception_{}_{}_version{}'.format(mode, resize, version))
 
 ## name of model files
 model_name = 'Xception.{epoch:03d}.{val_acc:.3f}.hdf5'
