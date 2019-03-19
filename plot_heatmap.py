@@ -102,13 +102,13 @@ if modus == 'save':
     img_heatmap = []
     ## iterates over all images in array
     for idx, img in enumerate(X_test):
-        print('image shape: {}'.format(X_test))
+        print('image shape: {}'.format(img))
         # plt.imshow(img)
         # plt.show()
-        print('norm image shape: {}'.format(X_test_mean.shape))
+        print('norm image shape: {}'.format(X_test_mean[idx].shape))
         ## generates a gradient based class activation map (grad-CAM) that maximizes the outputs of filter_indices in layer_idx
         ## returns the heatmap image indicating the input regions whose change would most contribute towards maximizing the output of filter_indices
-        grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=X_test_mean, backprop_modifier='relu')
+        grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=X_test_mean[idx], backprop_modifier='relu')
         print('grads shape: {}'.format(grads.shape))
         img_heatmap.append(grads)
 
