@@ -60,16 +60,18 @@ path = 'frogsumimodels/Xception_{}_{}_{}'.format(mode, resize, version)
 images = 'npz/data_{}_{}.npz'.format(mode, resize)
 heatmaps = 'frogsumimodels/Xception_{}_{}_{}/img_heatmap_{}_{}_{}.npz'.format(mode, resize, version, mode, resize, version)
 # img = load_img_attr_data(images)
-img = load_all_data(images)
+X, y, labeltonumber = load_all_data(images)
+
+## normalizes images used for attribution
+X = X.astype('float32') / 255
+mean = X.mean(axis=0)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
+# print(y_test)
+X_test_mean = X_test - mean
 
 if modus == 'save':
-    ## normalizes images used for attribution
-    norm_img = img.astype('float32') / 255
-    mean = img.mean(axis=0)
-    norm_img = img - mean
 
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 42, stratify = y)
-    # print(y_test)
     ## for tests use data_{}_{}.test.npz
     ## /home/stine/repositories
     # filename = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
@@ -99,14 +101,14 @@ if modus == 'save':
 
     img_heatmap = []
     ## iterates over all images in array
-    for idx, img in enumerate(img):
-        print('image shape: {}'.format(img))
+    for idx, img in enumerate(X_test):
+        print('image shape: {}'.format(X_test))
         # plt.imshow(img)
         # plt.show()
-        print('norm image shape: {}'.format(norm_img.shape))
+        print('norm image shape: {}'.format(X_test_mean.shape))
         ## generates a gradient based class activation map (grad-CAM) that maximizes the outputs of filter_indices in layer_idx
         ## returns the heatmap image indicating the input regions whose change would most contribute towards maximizing the output of filter_indices
-        grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=norm_img, backprop_modifier='relu')
+        grads = visualize_cam(model, layer_idx, filter_indices=idx, seed_input=X_test_mean, backprop_modifier='relu')
         print('grads shape: {}'.format(grads.shape))
         img_heatmap.append(grads)
 
@@ -115,7 +117,7 @@ if modus == 'save':
 
 elif modus == 'show':
     img_heatmaps = load_img_heatmaps(heatmaps)
-    for idx, img in enumerate(img):
+    for idx, img in enumerate(X_test):
         heatmap = img_heatmaps[idx]
         plt.imshow(overlay(heatmap, img))
         plt.show()
