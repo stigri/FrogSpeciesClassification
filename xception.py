@@ -166,7 +166,7 @@ save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs/Xception_{}_{}_{}'.format
 ## name of model files
 model_name = 'Xception.{epoch:03d}.{val_acc:.3f}.hdf5'
 csv_name = 'Xception_{}_{}_{}.csv'.format(mode, resize, version)
-file = open(save_modeldirectory/+ 'info.txt', 'w')
+file = open(save_modeldirectory + '/info.txt', 'w')
 lines = ['githash: {}'.format(githash), 'timestamp: {}'.format(time), 'mode: {}'.format(mode), 'resize: {}'.format(resize), 'version: {}'.format(version)]
 file.writelines(lines)
 file.close
