@@ -166,10 +166,7 @@ save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs/Xception_{}_{}_{}'.format
 ## name of model files
 model_name = 'Xception.{epoch:03d}.{val_acc:.3f}.hdf5'
 csv_name = 'Xception_{}_{}_{}.csv'.format(mode, resize, version)
-file = open(save_modeldirectory + '/info.txt', 'w')
-lines = ['githash: {}'.format(githash), 'timestamp: {}'.format(time), 'mode: {}'.format(mode), 'resize: {}'.format(resize), 'version: {}'.format(version)]
-file.writelines(lines)
-file.close
+
 
 ## create directory to save models if it does not exist
 if not os.path.isdir(save_modeldirectory):
@@ -182,6 +179,11 @@ if not os.path.isdir(save_csvdirectory):
 modelpath = os.path.join(save_modeldirectory, model_name)
 ## join the directory  with the csv file
 csvpath = os.path.join(save_csvdirectory, csv_name)
+
+file = open(save_modeldirectory + '/info.txt', 'w')
+lines = ['githash: {}'.format(githash), 'timestamp: {}'.format(time), 'mode: {}'.format(mode), 'resize: {}'.format(resize), 'version: {}'.format(version)]
+file.writelines(lines)
+file.close
 
 ## checkpoint that saves the best weights according to the validation accuracy
 checkpoint = ModelCheckpoint(filepath=modelpath, monitor='val_acc', verbose=1, save_best_only=True,
