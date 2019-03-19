@@ -81,7 +81,7 @@ if modus == 'save':
     print('[INFO] create model and load weights ...')
     weights = path + weightfile
     # with tf.device('/cpu:0'):
-    model = Xception(include_top=True, weights=weights, classes=len(img))
+    model = Xception(include_top=True, weights=weights, classes=len(X_test))
 
     # model = multi_gpu_model(model, gpus=2)
     # model.load_weights(weights)
