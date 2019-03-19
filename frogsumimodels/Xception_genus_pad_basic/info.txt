@@ -1,0 +1,6 @@
+githash: 58b37af
+timestamp: 1553019189.297981
+morde: genus
+resize: pad
+version: basic
+
