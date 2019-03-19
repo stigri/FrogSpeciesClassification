@@ -55,7 +55,7 @@ else:
     version = sys.argv[4]
     weightfile = sys.argv[5]
 
-path = 'frogsumimodels/Xception_{}_{}_{}'.format(mode, resize, version)
+path = 'frogsumimodels/Xception_{}_{}_{}/'.format(mode, resize, version)
 # images = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
 images = 'npz/data_{}_{}.npz'.format(mode, resize)
 heatmaps = 'frogsumimodels/Xception_{}_{}_{}/img_heatmap_{}_{}_{}.npz'.format(mode, resize, version, mode, resize, version)
