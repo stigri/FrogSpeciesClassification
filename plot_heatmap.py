@@ -55,10 +55,10 @@ else:
     version = sys.argv[4]
     weightfile = sys.argv[5]
 
-path = 'frogsumimodels/Xception_{}_{}_version{}'.format(mode, resize, version)
+path = 'frogsumimodels/Xception_{}_{}_{}'.format(mode, resize, version)
 # images = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
 images = 'npz/data_{}_{}.npz'.format(mode, resize)
-heatmaps = 'frogsumimodels/Xception_{}_{}_version{}/img_heatmap_{}_{}_version{}.npz'.format(mode, resize, version, mode, resize, version)
+heatmaps = 'frogsumimodels/Xception_{}_{}_{}/img_heatmap_{}_{}_{}.npz'.format(mode, resize, version, mode, resize, version)
 # img = load_img_attr_data(images)
 img = load_all_data(images)
 
@@ -111,7 +111,7 @@ if modus == 'save':
         img_heatmap.append(grads)
 
     ## saves heatmap array as .npz file
-    np.savez_compressed('img_heatmap_{}_{}_version{}'.format(mode, resize, version), img_heatmap=img_heatmap)
+    np.savez_compressed('img_heatmap_{}_{}_{}'.format(mode, resize, version), img_heatmap=img_heatmap)
 
 elif modus == 'show':
     img_heatmaps = load_img_heatmaps(heatmaps)
