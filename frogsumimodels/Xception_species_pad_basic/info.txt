@@ -1,0 +1,6 @@
+githash: 58b37af
+timestamp: 1553019477.9822848
+morde: species
+resize: pad
+version: basic
+
