@@ -287,7 +287,7 @@ elif modus == 'test':
     if worker == 'single':
         print(model.metrics_names)
         #model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
-        model.load_weights(save_modeldirectory + '/Xception_{}_{}_{}/{}'.format(mode, resize, version, weightfile))
+        model.load_weights(save_modeldirectory + '/{}'.format(weightfile))
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
         ## get predicted labels for test set
         y_prob = model.predict(X_test)
@@ -295,7 +295,7 @@ elif modus == 'test':
 
     elif worker == 'parallel':
         print(parallel_model.metrics_names)
-        parallel_model.load_weights(save_modeldirectory + '/Xception_{}_{}_{}/{}'.format(mode, resize, version, weightfile))
+        parallel_model.load_weights(save_modeldirectory + '/{}'.format(weightfile))
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
         ## get predicted labels for test set
         y_prob = parallel_model.predict(X_test)
@@ -316,7 +316,7 @@ elif modus == 'test':
     print('y_prob: {}'.format(y_prob))
     print('y_pred: {}'.format(y_pred))
 
-    with open(save_modeldirectory + '/Xception_{}_{}_{}/{}_{}_{}_{}.pkl'.format(mode, resize, version, modus, mode, resize, version), 'wb') as di:
+    with open(save_modeldirectory + '/{}_{}_{}_{}.pkl'.format(modus, mode, resize, version), 'wb') as di:
         pickle.dump([classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
 
     ## To see which approach works best:
