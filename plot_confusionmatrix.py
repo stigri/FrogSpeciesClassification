@@ -54,7 +54,7 @@ def plot_confusion_matrix(cm, classes,
 
 if len(sys.argv) != 4:
     sys.stderr.write(
-        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <version>\n')
+        'Usage: plot_confusionmatrix.py [species|genus], [pad|distort], <version>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
