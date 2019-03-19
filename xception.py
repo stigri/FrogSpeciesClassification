@@ -53,7 +53,7 @@ def load_data(filename):
 ################################################ main ##################################################################
 if len(sys.argv) != 8:
     sys.stderr.write(
-        'Usage: xception.py <species> or <genus>, <pad> or <distort>, <single> or <parallel>, <train> or <test>, <deep> or <transfer>, <version>, <weightfile>\n')
+        'Usage: xception.py [species|genus], [pad|distort], [single|parallel], [train|test], [deep|transfer], <version>, <weightfile>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
