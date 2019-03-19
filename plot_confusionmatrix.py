@@ -61,8 +61,8 @@ else:
     resize = sys.argv[2]
     version = sys.argv[3]
 
-
-path = 'frogsumimodels/Xception_{}_{}_version{}/test_{}_{}_version{}.pkl'.format(mode, resize, version, mode, resize, version)
+## frogsumimodels/Xcetpion_[genus|species]_[pad|distort]_$version
+path = 'frogsumimodels/Xception_{}_{}_{}/test_{}_{}_{}.pkl'.format(mode, resize, version, mode, resize, version)
 
 with open(path, 'rb') as f:
     classreport, cnf_matrix, math_corrcoef, y_prob, y_pred = pickle.load(f)
