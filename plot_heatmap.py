@@ -46,7 +46,7 @@ def load_img_heatmaps(heatmaps):
 ## reads parameter which describe if species or genera images are needed
 if len(sys.argv) != 6:
     sys.stderr.write(
-        'Usage: plot_heatmap.py <species> or <genus>, <pad> or <distort>, <save> or <show>, <version>, <weightfile>\n')
+        'Usage: plot_heatmap.py [species|genus], [pad|distort], [save|show], <version>, <weightfile>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
