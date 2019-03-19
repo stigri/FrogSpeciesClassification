@@ -30,6 +30,8 @@ from sklearn.model_selection import StratifiedKFold
 from collections import Counter
 from imblearn.over_sampling import RandomOverSampler
 import pickle
+import time
+import subprocess
 
 
 
@@ -156,12 +158,18 @@ def lr_schedule(epoch):
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 ## directory in which to create models
-save_modeldirectory = os.path.join(os.getcwd(), 'frogsumimodels/Xception_{}_{}_version{}'.format(mode, resize, version))
-save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs/Xception_{}_{}_version{}'.format(mode, resize, version))
+time = time.time()
+githash = subprocess.check_output(['git', 'describe', '--always']).strip()
+save_modeldirectory = os.path.join(os.getcwd(), 'frogsumimodels/Xception_{}_{}_{}'.format(mode, resize, version))
+save_csvdirectory = os.path.join(os.getcwd(), 'csvlogs/Xception_{}_{}_{}'.format(mode, resize, version))
 
 ## name of model files
 model_name = 'Xception.{epoch:03d}.{val_acc:.3f}.hdf5'
-csv_name = 'Xception_{}_{}_version{}.csv'.format(mode, resize, version)
+csv_name = 'Xception_{}_{}_{}.csv'.format(mode, resize, version)
+file = open(save_modeldirectory/+ 'info.txt', 'w')
+lines = ['githash: {}'.format(githash), 'timestamp: {}'.format(time), 'mode: {}'.format(mode), 'resize: {}'.format(resize), 'version: {}'.format(version)]
+file.writelines(lines)
+file.close
 
 ## create directory to save models if it does not exist
 if not os.path.isdir(save_modeldirectory):
@@ -279,7 +287,7 @@ elif modus == 'test':
     if worker == 'single':
         print(model.metrics_names)
         #model.load_weights(save_modeldirectory + '/Xception_genus_pad_version1.1/Xception.109.0.964.hdf5')
-        model.load_weights(save_modeldirectory + '/Xception_{}_{}_version{}/{}'.format(mode, resize, version, weightfile))
+        model.load_weights(save_modeldirectory + '/Xception_{}_{}_{}/{}'.format(mode, resize, version, weightfile))
         accuracy = model.evaluate(x=X_test, y=y_test_matrix)
         ## get predicted labels for test set
         y_prob = model.predict(X_test)
@@ -287,7 +295,7 @@ elif modus == 'test':
 
     elif worker == 'parallel':
         print(parallel_model.metrics_names)
-        parallel_model.load_weights(save_modeldirectory + '/Xception_{}_{}_version{}/{}'.format(mode, resize, version, weightfile))
+        parallel_model.load_weights(save_modeldirectory + '/Xception_{}_{}_{}/{}'.format(mode, resize, version, weightfile))
         accuracy = parallel_model.evaluate(x = X_test, y = y_test_matrix)
         ## get predicted labels for test set
         y_prob = parallel_model.predict(X_test)
@@ -308,7 +316,7 @@ elif modus == 'test':
     print('y_prob: {}'.format(y_prob))
     print('y_pred: {}'.format(y_pred))
 
-    with open('{}_{}_{}_version{}.pkl'.format(modus, mode, resize, version), 'wb') as di:
+    with open(save_modeldirectory + '/Xception_{}_{}_{}/{}_{}_{}_{}.pkl'.format(mode, resize, version, modus, mode, resize, version), 'wb') as di:
         pickle.dump([classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
 
     ## To see which approach works best:
