@@ -39,7 +39,7 @@ def load_img_heatmaps(heatmaps):
     print('[INFO] loading heatmaps...')
     npzfile = np.load(heatmaps)
     img_heatmaps = npzfile['img_heatmap']
-    print(img_heatmaps.shape)
+    # print(img_heatmaps.shape)
     return img_heatmaps
 
 
