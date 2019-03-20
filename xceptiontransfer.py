@@ -175,10 +175,10 @@ csv_logger = CSVLogger(filename=csvpath, separator=',', append=True)
 
 print('[INFO] compiling model...')
 
-## the top 2 xception blocks have been chosen randomly to be trained, so the first 116 layers will be frozen and the rest unfrozen
-for layer in model.layers[:116]:
+## the top 2 (116) and 5 (86) xception blocks have been chosen to be trained, so the first 116 layers will be frozen and the rest unfrozen
+for layer in model.layers[:86]:
     layer.trainable = False
-for layer in model.layers[116:]:
+for layer in model.layers[86:]:
     layer.trainable = True
 
 ## Adam or RMSProp with step learning rate decay:
