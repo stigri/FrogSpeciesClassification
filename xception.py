@@ -51,18 +51,17 @@ def load_data(filename):
 
 
 ################################################ main ##################################################################
-if len(sys.argv) != 8:
+if len(sys.argv) != 7:
     sys.stderr.write(
-        'Usage: xception.py [species|genus], [pad|distort], [single|parallel], [train|test], [deep|transfer], <version>, <weightfile>\n')
+        'Usage: xception.py [species|genus], [pad|distort], [single|parallel], [train|test], <version>, <weightfile>\n')
     sys.exit(1)
 else:
     mode = sys.argv[1]
     resize = sys.argv[2]
     worker = sys.argv[3]
     modus = sys.argv[4]
-    learn = sys.argv[5]
-    version = sys.argv[6]
-    weightfile = sys.argv[7]
+    version = sys.argv[5]
+    weightfile = sys.argv[6]
 
 
 ## for tests use data_{}_{}.test.npz
@@ -111,18 +110,13 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 
 ## define the model (preset weights)
 print('[INFO] defining model...')
-if learn == 'deep':
-    if worker == 'single':
+
+if worker == 'single':
+    model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
+elif worker == 'parallel':
+    with tf.device('/cpu:0'):
         model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
-    elif worker == 'parallel':
-        with tf.device('/cpu:0'):
-            model = Xception(include_top = True, weights = None, classes = len(labeltonumber))
-elif learn == 'transfer':
-    if worker == 'single':
-        model = Xception(include_top = False, weights = 'imagenet', classes = len(labeltonumber))
-    elif worker == 'parallel':
-        with tf.device('/cpu:0'):
-            model = Xception(include_top = False, weights = 'imagenet', classes = len(labeltonumber))
+
 
 ## print a summary of the model
 print(model.summary())
