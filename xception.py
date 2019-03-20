@@ -2,9 +2,8 @@
 ## parameter:
 ## <species> or <genus> to define if CNN learns classes of species or classes of genera and which images to use
 ## <pad> or <distort> defines how images were scaled to 299X299 by padding black rim or by distoting the image
-## <gpu> or <cpu> defines is code runs parallel (gpu) or on single gpu or cpu (cpu)
+## <single> or <parallel> defines is code runs on single gpu or cpu or  parallel on multiple gpus
 ## <train> or <test> defines if code is used for training or testing
-## <deep> or <transfer> defines if used to train the whole model (deep) or to use transfer learning
 ## to define which gpu is to be used call prgramm with:  gpuid python3 xception.py ... gpuid = 0 or 1
 
 
