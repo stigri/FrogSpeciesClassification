@@ -1,1 +1,5 @@
-githash: b'7913410'timestamp: 1553117816.7459643mode: speciesresize: padversion: transfer
+githash: b'7913410'
+timestamp: 1553117816.7459643
+mode: species
+resize: pad
+version: transfer116

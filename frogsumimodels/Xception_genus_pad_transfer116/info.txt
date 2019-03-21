@@ -1,1 +1,5 @@
-githash: b'7913410'timestamp: 1553118918.8004804mode: genusresize: padversion: transfer116
+githash: b'7913410'
+timestamp: 1553118918.8004804
+mode: genus
+resize: pad
+version: transfer116
