@@ -14,6 +14,11 @@ from vis.visualization import visualize_cam, overlay
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import keras.backend as K
+import pickle
+import heapq
+from skimage.color import rgba2rgb
+from skimage import data
+import matplotlib.colors as colors
 
 
 ## load X, y, labeltonumber
@@ -55,12 +60,17 @@ else:
     version = sys.argv[4]
     weightfile = sys.argv[5]
 
-path = 'frogsumimodels/Xception_{}_{}_{}/'.format(mode, resize, version)
+path_weights = 'frogsumimodels/Xception_{}_{}_{}/'.format(mode, resize, version)
 # images = 'npz/img_attr_{}_{}.npz'.format(mode, resize)
 images = 'npz/data_{}_{}.npz'.format(mode, resize)
 heatmaps = 'frogsumimodels/Xception_{}_{}_{}/img_heatmap_{}_{}_{}.npz'.format(mode, resize, version, mode, resize, version)
 # img = load_img_attr_data(images)
 X, y, labeltonumber = load_all_data(images)
+
+path_results = 'frogsumimodels/Xception_{}_{}_{}/test_{}_{}_{}.pkl'.format(mode, resize, version, mode, resize, version)
+
+with open(path_results, 'rb') as f:
+    classreport, cnf_matrix, math_corrcoef, y_prob, y_pred = pickle.load(f)
 
 ## normalizes images used for attribution
 X = X.astype('float32') / 255
@@ -79,7 +89,7 @@ if modus == 'save':
 
     ## creates model used for training and loads weights
     print('[INFO] create model and load weights ...')
-    weights = path + weightfile
+    weights = path_weights + weightfile
     # with tf.device('/cpu:0'):
     model = Xception(include_top=True, weights=weights, classes=len(labeltonumber))
 
@@ -118,7 +128,17 @@ if modus == 'save':
 elif modus == 'show':
     img_heatmaps = load_img_heatmaps(heatmaps)
     for idx, img in enumerate(X_test):
+        label = labeltonumber[y_test[idx]]
+        # pred_label = labeltonumber[y_pred[idx]]
+        prob = heapq.nlargest(3, zip(y_prob[idx], labeltonumber))
+        first = prob[0]
+        second = prob[1]
+        third = prob[2]
         heatmap = img_heatmaps[idx]
-        plt.imshow(overlay(heatmap, img))
+        fig, ax = plt.subplots(1, 2)
+        ax[0].imshow(img)
+        ax[1].imshow(overlay(img, heatmap))
+        fig.suptitle('{}\n{}: {}\n{}: {}\n{}: {}'.format(label, first[1], first[0] , second[1], second[0], third[1], third[0]))
         plt.show()
+
 
