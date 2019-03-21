@@ -150,7 +150,7 @@ def prepare_images(directory, resize, length, mode):
 
 if len(sys.argv) != 5:
     sys.stderr.write(
-        'Usage: inventory_exif.py <path to directory containing .jpg files>, <pad> or <distort>,'
+        'Usage: XYLabelToNumber.py <path to directory containing .jpg files>, <pad> or <distort>,'
         ' <edge length of resized image in pixel>, <genus> or <species>\n')
     sys.exit(1)
 else:
