@@ -67,6 +67,7 @@ path = 'frogsumimodels/Xception_{}_{}_{}/test_{}_{}_{}.pkl'.format(mode, resize,
 with open(path, 'rb') as f:
     classreport, cnf_matrix, math_corrcoef, y_prob, y_pred = pickle.load(f)
 
+print(math_corrcoef)
 filename = 'npz/data_{}_{}.npz'.format(mode, resize)
 labeltonumber = load_data(filename)
 print(classreport)
