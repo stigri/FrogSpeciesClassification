@@ -252,8 +252,16 @@ elif worker == 'parallel':
 #     accuracy = model.evaluate(x=X_train[X_test_res_idx], y=y_test_matrix, batch_size=BATCHSIZE)
 ######################################## end version 1.0 ###############################################################
 
+######################################## version balance ###############################################################
 
-######################################## version 1.1 ###################################################################
+ros = RandomOverSampler(random_state = 42)
+
+X_train, y_train = ros.fit_resample(X_train, y_train)
+
+print('Resampled dataset shape %s' % Counter(y_train))
+
+
+######################################## version basic #################################################################
 ## first version that was used for training
 ## only run for training by adding parameter 'train' when running script
 print('[INFO] generating data...')
@@ -275,6 +283,7 @@ if modus == 'train':
                                 validation_data = [X_val, y_val_matrix], epochs=EPOCHS,
                                 steps_per_epoch=STEPS_PER_EPOCH, verbose=1, callbacks=[checkpoint, lr_scheduler, csv_logger])
 
+###################################### end version basic and balance ###################################################
 
 ####################################### run on test set ################################################################
 ## only run for testing by adding parameter 'test' when running script
