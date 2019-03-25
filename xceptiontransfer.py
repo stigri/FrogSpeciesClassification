@@ -186,7 +186,7 @@ for layer in model.layers[86:]:
 model.compile(optimizer=Adam(lr_schedule(0)), loss='categorical_crossentropy', metrics=['accuracy'])
 
 
-######################################## version 1.1 ###################################################################
+######################################## basic ###################################################################
 ## first version that was used for training
 ## only run for training by adding parameter 'train' when running script
 print('[INFO] generating data...')
