@@ -253,12 +253,12 @@ elif worker == 'parallel':
 ######################################## end version 1.0 ###############################################################
 
 ######################################## version balance ###############################################################
-
+X_train_reshape = X_train.reshape(len(y_train), -1)
 ros = RandomOverSampler(random_state = 42)
-
-X_train, y_train = ros.fit_resample(X_train, y_train)
-
-print('Resampled dataset shape %s' % Counter(y_train))
+X_train_reshape_resample, y_train = ros.fit_resample(X_train_reshape, y_train)
+X_train = X_train_reshape_resample.reshape(len(X_train_reshape_resample), 299, 299, 3)
+print('X: {}'.format(X_train.shape()))
+print('Y:  {}'.format(y_train.shape()))
 
 
 ######################################## version basic #################################################################
