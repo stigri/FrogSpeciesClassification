@@ -175,7 +175,7 @@ modelpath = os.path.join(save_modeldirectory, model_name)
 csvpath = os.path.join(save_csvdirectory, csv_name)
 
 file = open(save_modeldirectory + '/info.txt', 'w')
-lines = ['githash: {}'.format(githash), 'timestamp: {}'.format(time), 'mode: {}'.format(mode), 'resize: {}'.format(resize), 'version: {}'.format(version)]
+lines = ['githash: {}\n'.format(githash), 'timestamp: {}\n'.format(time), 'mode: {}\n'.format(mode), 'resize: {}\n'.format(resize), 'version: {}\n'.format(version)]
 file.writelines(lines)
 file.close
 
@@ -257,8 +257,6 @@ X_train_reshape = X_train.reshape(len(y_train), -1)
 ros = RandomOverSampler(random_state = 42)
 X_train_reshape_resample, y_train = ros.fit_resample(X_train_reshape, y_train)
 X_train = X_train_reshape_resample.reshape(len(X_train_reshape_resample), 299, 299, 3)
-print('X: {}'.format(X_train.shape()))
-print('Y:  {}'.format(y_train.shape()))
 
 
 ######################################## version basic #################################################################
