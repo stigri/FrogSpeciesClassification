@@ -1,0 +1,5 @@
+githash: b'6f8de36'
+timestamp: 1553535298.4243054
+mode: genus
+resize: distort
+version: transfer86

@@ -1,0 +1,5 @@
+githash: b'6f8de36'
+timestamp: 1553631780.489372
+mode: species
+resize: distort
+version: balanced
