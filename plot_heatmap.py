@@ -28,8 +28,8 @@ def load_all_data(filename):
     X = npzfile['X']
     y = npzfile['y']
     labeltonumber = npzfile['labeltonumber']
-    # print(X)
-    # print(y)
+    print(len(X))
+    print(len(y))
     # print(labeltonumber)
     return X, y, labeltonumber
 
