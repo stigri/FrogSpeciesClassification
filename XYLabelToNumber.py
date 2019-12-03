@@ -1,3 +1,6 @@
+## Script to rescale images and to create data sets X, y and LabelToNumer for genera and species classification
+## renamed to xy_label_to_number for thesis
+
 import pyexiv2
 import sys
 import os
@@ -5,7 +8,6 @@ import magic
 import re
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
 ## lists are yspecies and ygenus from plot_inventory_exif.py
 genera = ['Leptophryne', 'Microhyla', 'Fejervarya', 'Polypedates', 'Limnonectes', 'Chalcorana', 'Rhacophorus',
@@ -52,7 +54,7 @@ def pad(image, length):
     ## return squared image with borders
     return resized
 
-def rescale(X, y, labeltonumber, absolutimpath, label):
+def rescale(X, y, labeltonumber, absolutimpath, label, length, resize):
     ## Use two approaches to get squared images:
     ## function pad: set long side of image to square length and add black or random noise to borders
     ## function resize: resize the image without caring about distortions
@@ -68,7 +70,7 @@ def rescale(X, y, labeltonumber, absolutimpath, label):
     return X, y
 
 
-## rescale images to squared images and create numpy arrays from images and labels
+## rescale images to squared images and create numpy arrays X, y and labeltonumber
 def prepare_images(directory, resize, length, mode):
     labeltonumber = list()
     X = list()
@@ -102,7 +104,7 @@ def prepare_images(directory, resize, length, mode):
                         else:
                             if label not in labeltonumber:
                                 labeltonumber.append(label)
-                            X, y = rescale(X, y, labeltonumber, absolutimpath, label)
+                            X, y = rescale(X, y, labeltonumber, absolutimpath, label, length, resize)
 
                         ## make sure genus sp. are not included in species dict
                     ## if given mode is species create dictionary with all species as keys and numbers 1-n as value
@@ -112,9 +114,9 @@ def prepare_images(directory, resize, length, mode):
                         if match.group(2) in species:
                             if label not in labeltonumber:
                                 labeltonumber.append(label)
-                            X, y = rescale(X, y, labeltonumber, absolutimpath, label)
+                            X, y = rescale(X, y, labeltonumber, absolutimpath, label, length, resize)
                     else:
-                        ## print error if mode is different from genus or species
+                        ## print error if mode is neither species or genus
                         sys.stderr.write(
                             'Usage: inventory_exif.py <path to directory containing .jpg files>, <pad> or <distort>,'
                             ' <length of resized image in pixel>, <width of resized image in pixel>, <genus> or <species>\n')
@@ -133,24 +135,10 @@ def prepare_images(directory, resize, length, mode):
     return X, y, labeltonumber
 
 
-## safe X, y, labeltonumber on hard disc (numpy savez)
-## shuffle data randomly before splitting
-## use stratified sampling to devide training and test sets (training and test)
-## sklearn.model_selection train_test_split (see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html)
-## add another dict to show how many images there are of each label an return min value to
-## k for k-fold cross validation (look into stratified sampling first)
-## use stratified k-fold to generate folds
-## in each iteration balance the training set not the validation fold
-## function random minority oversampling: copy minority images to balance the data and return balanced dataset
-## in each iteration use data augmentation in the training set not the validation fold (keras)
-## normalize data (keras)
-## use validation fold for validation
-## use test set for final validation
-
 
 if len(sys.argv) != 5:
     sys.stderr.write(
-        'Usage: XYLabelToNumber.py <path to directory containing .jpg files>, <pad> or <distort>,'
+        'Usage: xy_label_to_number.py <path to directory containing .jpg files>, <pad> or <distort>,'
         ' <edge length of resized image in pixel>, <genus> or <species>\n')
     sys.exit(1)
 else:
@@ -163,4 +151,5 @@ X, y, labeltonumber = prepare_images(directory, resize, length, mode)
 print(X)
 print(y)
 print(labeltonumber)
+## compress data and safe in npz file
 np.savez_compressed('data_{}_{}'.format(mode, resize), X = X, y = y, labeltonumber = labeltonumber)
