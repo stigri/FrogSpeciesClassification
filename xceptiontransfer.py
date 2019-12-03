@@ -1,4 +1,4 @@
-## https://www.depends-on-the-definition.com/transfer-learning-for-dog-breed-identification/
+## https://keras.io/applications/#usage-examples-for-image-Classication-models
 
 
 import tensorflow as tf
@@ -111,7 +111,6 @@ model = Model(inputs = base_model.input, outputs = predictions)
 print(model.summary())
 
 ## values from Olafenwa and Olafenva - 2018 and
-## https://machinelearningmastery.com/evaluate-performance-deep-learning-models-keras/
 EPOCHS = 200
 print('epochs: {}'.format(EPOCHS))
 ## batch normalization batch sizes: 64, 128, 256, 512
@@ -175,7 +174,8 @@ csv_logger = CSVLogger(filename=csvpath, separator=',', append=True)
 
 print('[INFO] compiling model...')
 
-## the top 2 (116) and 5 (86) xception blocks have been chosen to be trained, so the first 116 layers will be frozen and the rest unfrozen
+## the top 2 (116) and 5 (86) xception blocks have been chosen to be trained, so the first 116 layers will be set
+## immutable and the remeining will be continued to be trained
 for layer in model.layers[:86]:
     layer.trainable = False
 for layer in model.layers[86:]:
@@ -185,6 +185,12 @@ for layer in model.layers[86:]:
 ## https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rate-methods-for-deep-learning-2c8f433990d1
 model.compile(optimizer=Adam(lr_schedule(0)), loss='categorical_crossentropy', metrics=['accuracy'])
 
+######################################## balance #################################################################
+
+X_train_reshape = X_train.reshape(len(y_train), -1)
+ros = RandomOverSampler(random_state = 42)
+X_train_reshape_resample, y_train = ros.fit_resample(X_train_reshape, y_train)
+X_train = X_train_reshape_resample.reshape(len(X_train_reshape_resample), 299, 299, 3)
 
 ######################################## basic ###################################################################
 ## first version that was used for training
@@ -233,7 +239,7 @@ elif modus == 'test':
     print('y_pred: {}'.format(y_pred))
 
     with open(save_modeldirectory + '/{}_{}_{}_{}.pkl'.format(modus, mode, resize, version), 'wb') as di:
-        pickle.dump([classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
+        pickle.dump([accuracy, classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
 
     ## To see which approach works best:
     ## 1. mathews corrcoef (use to decide which approach works best)
