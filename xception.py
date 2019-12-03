@@ -258,7 +258,6 @@ ros = RandomOverSampler(random_state = 42)
 X_train_reshape_resample, y_train = ros.fit_resample(X_train_reshape, y_train)
 X_train = X_train_reshape_resample.reshape(len(X_train_reshape_resample), 299, 299, 3)
 
-
 ######################################## version basic #################################################################
 ## first version that was used for training
 ## only run for training by adding parameter 'train' when running script
@@ -320,7 +319,7 @@ elif modus == 'test':
     print('y_pred: {}'.format(y_pred))
 
     with open(save_modeldirectory + '/{}_{}_{}_{}.pkl'.format(modus, mode, resize, version), 'wb') as di:
-        pickle.dump([classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
+        pickle.dump([accuracy, classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
 
     ## To see which approach works best:
     ## 1. mathews corrcoef (use to decide which approach works best)
