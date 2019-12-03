@@ -24,6 +24,7 @@ def plot_confusion_matrix(cm, classes, ax1, cax, ax2):
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
+
     # if normalize:
     cmn = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
     cmn = np.multiply(cmn, 100)
@@ -114,6 +115,7 @@ def plot_confusion_matrix(cm, classes, ax1, cax, ax2):
 
 plt.rcParams.update({'font.size': 10})
 
+
 ## parameter determine the training version
 if len(sys.argv) != 4:
     sys.stderr.write(
@@ -129,6 +131,7 @@ path = 'frogsumimodels/Xception_{}_{}_{}/test_{}_{}_{}.pkl'.format(mode, resize,
 
 with open(path, 'rb') as f:
     accuracy, classreport, cnf_matrix, math_corrcoef, y_prob, y_pred = pickle.load(f)
+
 
 print('loss: {}, accuracy: {}'.format(accuracy[0], accuracy[1]))
 print('MCC: {}'.format(math_corrcoef))

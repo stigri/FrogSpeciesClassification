@@ -91,7 +91,9 @@ if modus == 'save':
 
     ## creates model used for training and loads weights
     print('[INFO] create model and load weights ...')
+
     weights = path_weights + weightfile
+
     # with tf.device('/cpu:0'):
     model = Xception(include_top=True, weights=weights, classes=len(labeltonumber))
 
@@ -122,6 +124,7 @@ if modus == 'save':
         ## returns the heatmap image indicating the input regions whose change would most contribute towards maximizing the output of filter_indices
         grads = visualize_cam(model, layer_idx, filter_indices=y_test[idx], seed_input=X_test_mean[idx],
                               backprop_modifier='relu')
+
         print('grads shape: {}'.format(grads.shape))
         img_heatmap.append(grads)
 
@@ -146,6 +149,7 @@ elif modus == 'show':
 
     ## code to show heatmaps (comment if you want to see misclassified images instead)
     img_heatmaps = load_img_heatmaps(heatmaps)
+
     print(len(img_heatmaps))
     for idx, img in enumerate(X_test):
         label = labeltonumber[y_test[idx]]
@@ -167,3 +171,4 @@ elif modus == 'show':
                                                       third[0]))
 
             plt.show()
+

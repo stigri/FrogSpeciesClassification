@@ -35,6 +35,7 @@ import matplotlib.pyplot as plt
 
 
 
+
 ############################################# function to load the data ################################################
 ## load X, y, labeltonumber
 def load_data(filename):
@@ -175,6 +176,7 @@ modelpath = os.path.join(save_modeldirectory, model_name)
 csvpath = os.path.join(save_csvdirectory, csv_name)
 
 file = open(save_modeldirectory + '/info.txt', 'w')
+
 lines = ['githash: {}\n'.format(githash), 'timestamp: {}\n'.format(time), 'mode: {}\n'.format(mode), 'resize: {}\n'.format(resize), 'version: {}\n'.format(version)]
 file.writelines(lines)
 file.close
@@ -320,6 +322,7 @@ elif modus == 'test':
 
     with open(save_modeldirectory + '/{}_{}_{}_{}.pkl'.format(modus, mode, resize, version), 'wb') as di:
         pickle.dump([accuracy, classreport, cnf_matrix, math_corrcoef, y_prob, y_pred], di)
+
 
     ## To see which approach works best:
     ## 1. mathews corrcoef (use to decide which approach works best)
